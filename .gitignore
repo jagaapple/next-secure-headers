@@ -30,3 +30,6 @@ npm-debug.log
 
 # Generated files created by bundler.
 lib
+
+# Generated files created by tests.
+coverage

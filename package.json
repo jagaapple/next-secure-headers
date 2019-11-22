@@ -34,18 +34,24 @@
     "lint": "eslint ./src/**/*.ts",
     "fix": "eslint --fix ./src/**/*.ts",
     "prepublishOnly": "npm run build",
-    "clean": "rm -rf ./lib"
+    "test": "jest --coverage",
+    "coverage": "codecov",
+    "clean": "rm -rf ./lib ./coverage"
   },
   "config": {},
   "dependencies": {},
   "devDependencies": {
+    "@types/jest": "^24.0.23",
     "@typescript-eslint/eslint-plugin": "^2.7.0",
     "@typescript-eslint/parser": "^2.7.0",
+    "codecov": "^3.6.1",
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^6.6.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-prettier": "^3.1.1",
+    "jest": "^24.9.0",
     "prettier": "^1.19.1",
+    "ts-jest": "^24.1.0",
     "typescript": "^3.7.2"
   },
   "peerDependencies": {},
