@@ -1,0 +1,68 @@
+# Specify the line length that the printer will wrap on.
+printWidth: 128
+
+# Specify the number of spaces per indentation-level.
+tabWidth: 2
+
+# Indent lines with tabs instead of spaces.
+useTabs: false
+
+# Print semicolons at the ends of statements.
+semi: true
+
+# Use single quotes instead of double quotes.
+singleQuote: false
+
+# Change when properties in objects are quoted.
+quoteProps: "as-needed"
+
+# Use single quotes instead of double quotes in JSX.
+# jsxSingleQuote: false
+
+# Use single quotes instead of double quotes in JSX.
+# jsxSingleQuote: false
+# Print trailing commas wherever possible when multi-line (A single-line array, for example, never gets trailing commas).
+trailingComma: "all"
+
+# Print spaces between brackets in object literals.
+bracketSpacing: true
+
+# Put the `>` of a multi-line JSX element at the end of the last line instead of being alone on the next line
+# (does not apply to self closing elements).
+# jsxBracketSameLine: false
+
+# Include parentheses around a sole arrow function parameter.
+arrowParens: "always"
+
+# Format only a segment of a file.
+# These two options can be used to format code starting and ending at a given character offset (inclusive and exclusive,
+# respectively).
+# rangeStart: 0
+# rangeEnd: "Infinity"
+# Specify which parser to use.
+# Both the babylon and flow parsers support the same set of JavaScript features (including Flow).
+# Prettier automatically infers the parser from the input file path, so you shouldn't have to change this setting.
+# parser: "typescript"
+# Specify the input filepath. This will be used to do parser inference.
+filepath: "none"
+
+# Prettier can restrict itself to only format files that contain a special comment, called a pragma, at the top of the file.
+# This is very useful when gradually transitioning large, unformatted codebases to prettier.
+requirePragma: false
+
+# Prettier can insert a special @format marker at the top of files specifying that the file has been formatted with prettier.
+# This works well when used in tandem with the --require-pragma option. If there is already a docblock at the top of the file
+# then this option will add a newline to it with the @format marker.
+insertPragma: false
+
+# By default, Prettier will wrap markdown text as-is since some services use a linebreak-sensitive renderer,
+# e.g. GitHub comment and BitBucket. In some cases you may want to rely on editor/viewer soft wrapping instead, so this option
+# allows you to opt out with "never".
+proseWrap: "preserve"
+
+# Specify the global whitespace sensitivity for HTML files, see whitespace-sensitive formatting for more info.
+# https://prettier.io/blog/2018/11/07/1.15.0.html#whitespace-sensitive-formatting
+htmlWhitespaceSensitivity: "strict"
+
+# For historical reasons, there exist two commonly used flavors of line endings in text files.
+endOfLine: "lf"
