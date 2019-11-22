@@ -28,10 +28,26 @@
     "type": "git",
     "url": "https://github.com/jagaapple/next-secure-headers.git"
   },
-  "scripts": {},
+  "scripts": {
+    "prebuild": "rm -rf ./lib",
+    "build": "tsc -p ./tsconfig.json",
+    "lint": "eslint ./src/**/*.ts",
+    "fix": "eslint --fix ./src/**/*.ts",
+    "prepublishOnly": "npm run build",
+    "clean": "rm -rf ./lib"
+  },
   "config": {},
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.7.0",
+    "@typescript-eslint/parser": "^2.7.0",
+    "eslint": "^6.6.0",
+    "eslint-config-prettier": "^6.6.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-prettier": "^3.1.1",
+    "prettier": "^1.19.1",
+    "typescript": "^3.7.2"
+  },
   "peerDependencies": {},
   "engines": {
     "node": ">=10.0.0"
