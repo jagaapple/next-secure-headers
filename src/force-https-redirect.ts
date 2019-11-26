@@ -1,6 +1,6 @@
 import { ResponseHeader } from "./shared";
 
-export type ForceHTTPSRedirect =
+export type ForceHTTPSRedirectOption =
   | boolean
   | [true | number]
   | [true | number, Partial<{ includeSubDomains: boolean; preload: boolean }>];
@@ -8,7 +8,7 @@ export type ForceHTTPSRedirect =
 const headerName = "Strict-Transport-Security";
 const defaultMaxAge = 60 * 60 * 24 * 365 * 2; // 2 years
 
-const createHSTSHeaderValue = (option?: ForceHTTPSRedirect) => {
+const createHSTSHeaderValue = (option?: ForceHTTPSRedirectOption) => {
   if (option == undefined) return `max-age=${defaultMaxAge}`;
   if (option === false) return;
   if (option === true) return `max-age=${defaultMaxAge}`;
@@ -32,7 +32,7 @@ const createHSTSHeaderValue = (option?: ForceHTTPSRedirect) => {
   throw new Error(`Invaild value for ${headerName}: ${option}`);
 };
 
-export const createForceHTTPSRedirectHeader = (option?: ForceHTTPSRedirect): ResponseHeader => {
+export const createForceHTTPSRedirectHeader = (option?: ForceHTTPSRedirectOption): ResponseHeader => {
   const value = createHSTSHeaderValue(option);
 
   return { name: headerName, value };
