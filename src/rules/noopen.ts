@@ -1,4 +1,4 @@
-import { ResponseHeader } from "./shared";
+import { ResponseHeader } from "../shared";
 
 export type NoopenOption = false | "noopen";
 
