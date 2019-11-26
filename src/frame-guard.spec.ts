@@ -17,7 +17,7 @@ describe("createFrameGuardHeader", () => {
 
     context("when giving false", () => {
       it("should be undefined", () => {
-        expect(createFrameGuardHeader(false).value).toBe(undefined);
+        expect(createFrameGuardHeader(false).value).toBeUndefined();
       });
     });
 

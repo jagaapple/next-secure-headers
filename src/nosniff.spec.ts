@@ -17,7 +17,7 @@ describe("createNosniffHeader", () => {
 
     context("when giving false", () => {
       it("should be undefined", () => {
-        expect(createNosniffHeader(false).value).toBe(undefined);
+        expect(createNosniffHeader(false).value).toBeUndefined();
       });
     });
 
