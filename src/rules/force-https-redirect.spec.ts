@@ -1,139 +1,148 @@
-import { createForceHTTPSRedirectHeader } from "./force-https-redirect";
+import { createHSTSHeaderValue, createForceHTTPSRedirectHeader } from "./force-https-redirect";
 
 describe("createForceHTTPSRedirectHeader", () => {
-  describe("return.name", () => {
-    it('should be "Strict-Transport-Security"', () => {
-      expect(createForceHTTPSRedirectHeader().name).toBe("Strict-Transport-Security");
+  let headerValueCreatorSpy: jest.Mock<ReturnType<typeof createHSTSHeaderValue>, Parameters<typeof createHSTSHeaderValue>>;
+  beforeAll(() => {
+    headerValueCreatorSpy = jest.fn(createHSTSHeaderValue);
+  });
+
+  it('should return "Strict-Transport-Security" as object\'s "name" property', () => {
+    expect(createForceHTTPSRedirectHeader(undefined, headerValueCreatorSpy)).toHaveProperty(
+      "name",
+      "Strict-Transport-Security",
+    );
+  });
+
+  it('should call the second argument function and return a value from the function as object\'s "value" property', () => {
+    const dummyValue = "dummy-value";
+    headerValueCreatorSpy.mockReturnValue(dummyValue);
+
+    expect(createForceHTTPSRedirectHeader(undefined, headerValueCreatorSpy)).toHaveProperty("value", dummyValue);
+    expect(headerValueCreatorSpy).toBeCalledTimes(1);
+  });
+});
+
+describe("createHSTSHeaderValue", () => {
+  const secondsOfTwoYears = 60 * 60 * 24 * 365 * 2;
+
+  context("when giving undefined", () => {
+    it('should return "max-age=" set two years', () => {
+      expect(createHSTSHeaderValue()).toBe(`max-age=${secondsOfTwoYears}`);
+      expect(createHSTSHeaderValue(null as any)).toBe(`max-age=${secondsOfTwoYears}`);
     });
   });
 
-  describe("return.value", () => {
-    const secondsOfTwoYears = 60 * 60 * 24 * 365 * 2;
-
-    context("when giving undefined", () => {
-      it('should be "max-age=" set two years', () => {
-        expect(createForceHTTPSRedirectHeader().value).toBe(`max-age=${secondsOfTwoYears}`);
-      });
+  context("when giving false", () => {
+    it("should return undefined", () => {
+      expect(createHSTSHeaderValue(false)).toBeUndefined();
     });
+  });
 
-    context("when giving false", () => {
-      it("should be undefined", () => {
-        expect(createForceHTTPSRedirectHeader(false).value).toBeUndefined();
-      });
+  context("when giving true", () => {
+    it('should return "max-age=" set two years', () => {
+      expect(createHSTSHeaderValue(true)).toBe(`max-age=${secondsOfTwoYears}`);
     });
+  });
 
-    context("when giving true", () => {
-      it('should be "max-age=" set two years', () => {
-        expect(createForceHTTPSRedirectHeader(true).value).toBe(`max-age=${secondsOfTwoYears}`);
-      });
+  context("when giving false as array", () => {
+    it("should raise error", () => {
+      expect(() => createHSTSHeaderValue([false as any])).toThrowError();
     });
+  });
 
-    context("when giving false as array", () => {
-      it("should raise error", () => {
-        expect(() => createForceHTTPSRedirectHeader([false as any]).value).toThrowError();
-      });
+  context("when giving true as array", () => {
+    it('should return "max-age=" set two years', () => {
+      expect(createHSTSHeaderValue([true])).toBe(`max-age=${secondsOfTwoYears}`);
     });
+  });
 
-    context("when giving true as array", () => {
-      it('should be "max-age=" set two years', () => {
-        expect(createForceHTTPSRedirectHeader([true]).value).toBe(`max-age=${secondsOfTwoYears}`);
-      });
+  context("when giving a number as array", () => {
+    it('should return "max-age=" set the number', () => {
+      const dummyAge = 123;
+      expect(createHSTSHeaderValue([dummyAge])).toBe(`max-age=${dummyAge}`);
     });
+  });
 
-    context("when giving a number as array", () => {
-      it('should be "max-age=" set the number', () => {
+  context("when giving an invalid number as array", () => {
+    it("should raise error", () => {
+      expect(() => createHSTSHeaderValue([NaN])).toThrow();
+      expect(() => createHSTSHeaderValue([Number.POSITIVE_INFINITY])).toThrow();
+      expect(() => createHSTSHeaderValue([Number.NEGATIVE_INFINITY])).toThrow();
+    });
+  });
+
+  context('when specifying "includeSubDomains" option', () => {
+    context('specifying false to "includeSubDomains"', () => {
+      it('should return only "max-age"', () => {
+        expect(createHSTSHeaderValue([true, { includeSubDomains: false }])).toBe(`max-age=${secondsOfTwoYears}`);
+
         const dummyAge = 123;
-        expect(createForceHTTPSRedirectHeader([dummyAge]).value).toBe(`max-age=${dummyAge}`);
+        expect(createHSTSHeaderValue([dummyAge, { includeSubDomains: false }])).toBe(`max-age=${dummyAge}`);
       });
     });
 
-    context("when giving an invalid number as array", () => {
-      it("should raise error", () => {
-        expect(() => createForceHTTPSRedirectHeader([NaN]).value).toThrow();
-        expect(() => createForceHTTPSRedirectHeader([Number.POSITIVE_INFINITY]).value).toThrow();
-        expect(() => createForceHTTPSRedirectHeader([Number.NEGATIVE_INFINITY]).value).toThrow();
+    context('specifying true to "includeSubDomains"', () => {
+      it('should return "max-age" and "includeSubDomains"', () => {
+        expect(createHSTSHeaderValue([true, { includeSubDomains: true }])).toBe(
+          `max-age=${secondsOfTwoYears}; includeSubDomains`,
+        );
+
+        const dummyAge = 123;
+        expect(createHSTSHeaderValue([dummyAge, { includeSubDomains: true }])).toBe(`max-age=${dummyAge}; includeSubDomains`);
+      });
+    });
+  });
+
+  context('when specifying "preload" option', () => {
+    context('specifying false to "preload"', () => {
+      it('should return only "max-age"', () => {
+        expect(createHSTSHeaderValue([true, { preload: false }])).toBe(`max-age=${secondsOfTwoYears}`);
+
+        const dummyAge = 123;
+        expect(createHSTSHeaderValue([dummyAge, { preload: false }])).toBe(`max-age=${dummyAge}`);
       });
     });
 
-    context('when specifying "includeSubDomains" option', () => {
-      context('specifying false to "includeSubDomains"', () => {
-        it('should include only "max-age"', () => {
-          expect(createForceHTTPSRedirectHeader([true, { includeSubDomains: false }]).value).toBe(
-            `max-age=${secondsOfTwoYears}`,
-          );
+    context('specifying true to "preload"', () => {
+      it('should return "max-age" and "preload"', () => {
+        expect(createHSTSHeaderValue([true, { preload: true }])).toBe(`max-age=${secondsOfTwoYears}; preload`);
 
-          const dummyAge = 123;
-          expect(createForceHTTPSRedirectHeader([dummyAge, { includeSubDomains: false }]).value).toBe(`max-age=${dummyAge}`);
-        });
+        const dummyAge = 123;
+        expect(createHSTSHeaderValue([dummyAge, { preload: true }])).toBe(`max-age=${dummyAge}; preload`);
       });
+    });
+  });
 
-      context('specifying true to "includeSubDomains"', () => {
-        it('should include "max-age" and "includeSubDomains"', () => {
-          expect(createForceHTTPSRedirectHeader([true, { includeSubDomains: true }]).value).toBe(
-            `max-age=${secondsOfTwoYears}; includeSubDomains`,
-          );
+  context("when specifying all options", () => {
+    context("specifying false to the options", () => {
+      it('should return only "max-age"', () => {
+        expect(createHSTSHeaderValue([true, { includeSubDomains: false, preload: false }])).toBe(
+          `max-age=${secondsOfTwoYears}`,
+        );
 
-          const dummyAge = 123;
-          expect(createForceHTTPSRedirectHeader([dummyAge, { includeSubDomains: true }]).value).toBe(
-            `max-age=${dummyAge}; includeSubDomains`,
-          );
-        });
+        const dummyAge = 123;
+        expect(createHSTSHeaderValue([dummyAge, { includeSubDomains: false, preload: false }])).toBe(`max-age=${dummyAge}`);
       });
     });
 
-    context('when specifying "preload" option', () => {
-      context('specifying false to "preload"', () => {
-        it('should include only "max-age"', () => {
-          expect(createForceHTTPSRedirectHeader([true, { preload: false }]).value).toBe(`max-age=${secondsOfTwoYears}`);
+    context("specifying true to the options", () => {
+      it('should return "max-age" and the options', () => {
+        expect(createHSTSHeaderValue([true, { includeSubDomains: true, preload: true }])).toBe(
+          `max-age=${secondsOfTwoYears}; includeSubDomains; preload`,
+        );
 
-          const dummyAge = 123;
-          expect(createForceHTTPSRedirectHeader([dummyAge, { preload: false }]).value).toBe(`max-age=${dummyAge}`);
-        });
-      });
-
-      context('specifying true to "preload"', () => {
-        it('should include "max-age" and "preload"', () => {
-          expect(createForceHTTPSRedirectHeader([true, { preload: true }]).value).toBe(`max-age=${secondsOfTwoYears}; preload`);
-
-          const dummyAge = 123;
-          expect(createForceHTTPSRedirectHeader([dummyAge, { preload: true }]).value).toBe(`max-age=${dummyAge}; preload`);
-        });
-      });
-    });
-
-    context("when specifying all options", () => {
-      context("specifying false to the options", () => {
-        it('should include only "max-age"', () => {
-          expect(createForceHTTPSRedirectHeader([true, { includeSubDomains: false, preload: false }]).value).toBe(
-            `max-age=${secondsOfTwoYears}`,
-          );
-
-          const dummyAge = 123;
-          expect(createForceHTTPSRedirectHeader([dummyAge, { includeSubDomains: false, preload: false }]).value).toBe(
-            `max-age=${dummyAge}`,
-          );
-        });
-      });
-
-      context("specifying true to the options", () => {
-        it('should include "max-age" and the options', () => {
-          expect(createForceHTTPSRedirectHeader([true, { includeSubDomains: true, preload: true }]).value).toBe(
-            `max-age=${secondsOfTwoYears}; includeSubDomains; preload`,
-          );
-
-          const dummyAge = 123;
-          expect(createForceHTTPSRedirectHeader([dummyAge, { includeSubDomains: true, preload: true }]).value).toBe(
-            `max-age=${dummyAge}; includeSubDomains; preload`,
-          );
-        });
+        const dummyAge = 123;
+        expect(createHSTSHeaderValue([dummyAge, { includeSubDomains: true, preload: true }])).toBe(
+          `max-age=${dummyAge}; includeSubDomains; preload`,
+        );
       });
     });
   });
 
   context("when giving invalid value", () => {
     it("should raise error", () => {
-      expect(() => createForceHTTPSRedirectHeader("foo" as any)).toThrow();
-      expect(() => createForceHTTPSRedirectHeader([] as any)).toThrow();
+      expect(() => createHSTSHeaderValue("foo" as any)).toThrow();
+      expect(() => createHSTSHeaderValue([] as any)).toThrow();
     });
   });
 });

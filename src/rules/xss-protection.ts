@@ -4,7 +4,7 @@ export type XSSProtectionOption = false | "sanitize" | "block-rendering" | ["rep
 
 const headerName = "X-XSS-Protection";
 
-const createXXSSProtectionHeaderValue = (option?: XSSProtectionOption) => {
+export const createXXSSProtectionHeaderValue = (option?: XSSProtectionOption): string | undefined => {
   if (option == undefined) return "1";
   if (option === false) return "0";
   if (option === "sanitize") return "1";
@@ -17,8 +17,11 @@ const createXXSSProtectionHeaderValue = (option?: XSSProtectionOption) => {
   throw new Error(`Invalid value for ${headerName}: ${option}`);
 };
 
-export const createXSSProtectionHeader = (option?: XSSProtectionOption): ResponseHeader => {
-  const value = createXXSSProtectionHeaderValue(option);
+export const createXSSProtectionHeader = (
+  option?: XSSProtectionOption,
+  headerValueCreator = createXXSSProtectionHeaderValue,
+): ResponseHeader => {
+  const value = headerValueCreator(option);
 
   return { name: headerName, value };
 };

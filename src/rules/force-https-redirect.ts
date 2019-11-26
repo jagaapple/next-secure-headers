@@ -8,7 +8,7 @@ export type ForceHTTPSRedirectOption =
 const headerName = "Strict-Transport-Security";
 const defaultMaxAge = 60 * 60 * 24 * 365 * 2; // 2 years
 
-const createHSTSHeaderValue = (option?: ForceHTTPSRedirectOption) => {
+export const createHSTSHeaderValue = (option?: ForceHTTPSRedirectOption): string | undefined => {
   if (option == undefined) return `max-age=${defaultMaxAge}`;
   if (option === false) return;
   if (option === true) return `max-age=${defaultMaxAge}`;
@@ -32,8 +32,11 @@ const createHSTSHeaderValue = (option?: ForceHTTPSRedirectOption) => {
   throw new Error(`Invaild value for ${headerName}: ${option}`);
 };
 
-export const createForceHTTPSRedirectHeader = (option?: ForceHTTPSRedirectOption): ResponseHeader => {
-  const value = createHSTSHeaderValue(option);
+export const createForceHTTPSRedirectHeader = (
+  option?: ForceHTTPSRedirectOption,
+  headerValueCreator = createHSTSHeaderValue,
+): ResponseHeader => {
+  const value = headerValueCreator(option);
 
   return { name: headerName, value };
 };
