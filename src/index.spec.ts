@@ -36,7 +36,7 @@ describe("createHeadersObject", () => {
 
     it("should call each rules and give proper options", () => {
       const dummyOptions: Parameters<typeof createHeadersObject>[0] = {
-        forceHTTPSRedirect: [123, { preload: true }],
+        forceHTTPSRedirect: [true, { maxAge: 123, preload: true }],
         frameGuard: ["allow-from", { uri: "https://example.example.com" }],
         noopen: false,
         nosniff: false,
