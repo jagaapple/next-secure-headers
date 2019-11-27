@@ -4,6 +4,10 @@ import * as rules from "./rules";
 import { default as withSecureHeaders, createHeadersObject } from "./index";
 
 describe("createHeadersObject", () => {
+  let expectCTHeaderCreatorSpy: jest.SpyInstance<
+    ReturnType<typeof rules.createExpectCTHeader>,
+    Parameters<typeof rules.createExpectCTHeader>
+  >;
   let forceHTTPSRedirectHeaderCreatorSpy: jest.SpyInstance<
     ReturnType<typeof rules.createForceHTTPSRedirectHeader>,
     Parameters<typeof rules.createForceHTTPSRedirectHeader>
@@ -31,6 +35,7 @@ describe("createHeadersObject", () => {
 
   describe("calling rules", () => {
     beforeAll(() => {
+      expectCTHeaderCreatorSpy = jest.spyOn(rules, "createExpectCTHeader");
       forceHTTPSRedirectHeaderCreatorSpy = jest.spyOn(rules, "createForceHTTPSRedirectHeader");
       frameGuardHeaderCreatorSpy = jest.spyOn(rules, "createFrameGuardHeader");
       noopenHeaderCreatorSpy = jest.spyOn(rules, "createNoopenHeader");
@@ -41,6 +46,7 @@ describe("createHeadersObject", () => {
 
     it("should call each rules and give proper options", () => {
       const dummyOptions: Parameters<typeof createHeadersObject>[0] = {
+        expectCT: [true, { maxAge: 123, enforce: true, reportURI: "https://example.example.com" }],
         forceHTTPSRedirect: [true, { maxAge: 123, preload: true }],
         frameGuard: ["allow-from", { uri: "https://example.example.com" }],
         noopen: false,
@@ -48,6 +54,9 @@ describe("createHeadersObject", () => {
         xssProtection: ["report", { uri: "https://example.example.com" }],
       };
       createHeadersObject(dummyOptions);
+
+      expect(expectCTHeaderCreatorSpy).toBeCalledTimes(1);
+      expect(expectCTHeaderCreatorSpy).toBeCalledWith(dummyOptions.expectCT);
 
       expect(forceHTTPSRedirectHeaderCreatorSpy).toBeCalledTimes(1);
       expect(forceHTTPSRedirectHeaderCreatorSpy).toBeCalledWith(dummyOptions.forceHTTPSRedirect);

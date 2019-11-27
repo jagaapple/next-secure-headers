@@ -1,3 +1,4 @@
+export { ExpectCTOption, createExpectCTHeader } from "./expect-ct";
 export { ForceHTTPSRedirectOption, createForceHTTPSRedirectHeader } from "./force-https-redirect";
 export { FrameGuardOption, createFrameGuardHeader } from "./frame-guard";
 export { NoopenOption, createNoopenHeader } from "./noopen";

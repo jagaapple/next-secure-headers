@@ -5,6 +5,10 @@ import * as rules from "./rules";
 
 type Options = Partial<{
   /**
+   * This is to set "Expect-CT" header and it's to tell browsers to expect Certificate Transparency.
+   */
+  expectCT: rules.ExpectCTOption;
+  /**
    * This is to set "Strict-Transport-Security (HSTS)" header and it's to prevent man-in-the-middle attacks during redirects from HTTP to HTTPS.
    * To enable this is highly recommended if you use HTTPS (SSL) on your servers.
    * By default, this is set two years (63,072,000 seconds) as `max-age` .
@@ -46,6 +50,7 @@ export const createHeadersObject = (options: Options = {}) => {
   const newHeaders: Record<string, string> = {};
 
   [
+    rules.createExpectCTHeader(options.expectCT),
     rules.createForceHTTPSRedirectHeader(options.forceHTTPSRedirect),
     rules.createFrameGuardHeader(options.frameGuard),
     rules.createNoopenHeader(options.noopen),
