@@ -20,6 +20,10 @@ describe("createHeadersObject", () => {
     ReturnType<typeof rules.createNosniffHeader>,
     Parameters<typeof rules.createNosniffHeader>
   >;
+  let referrerGuardHeaderCreatorSpy: jest.SpyInstance<
+    ReturnType<typeof rules.createReferrerGuardHeader>,
+    Parameters<typeof rules.createReferrerGuardHeader>
+  >;
   let xssProtectionHeaderCreatorSpy: jest.SpyInstance<
     ReturnType<typeof rules.createXSSProtectionHeader>,
     Parameters<typeof rules.createXSSProtectionHeader>
@@ -31,6 +35,7 @@ describe("createHeadersObject", () => {
       frameGuardHeaderCreatorSpy = jest.spyOn(rules, "createFrameGuardHeader");
       noopenHeaderCreatorSpy = jest.spyOn(rules, "createNoopenHeader");
       nosniffHeaderCreatorSpy = jest.spyOn(rules, "createNosniffHeader");
+      referrerGuardHeaderCreatorSpy = jest.spyOn(rules, "createReferrerGuardHeader");
       xssProtectionHeaderCreatorSpy = jest.spyOn(rules, "createXSSProtectionHeader");
     });
 
@@ -55,6 +60,9 @@ describe("createHeadersObject", () => {
 
       expect(nosniffHeaderCreatorSpy).toBeCalledTimes(1);
       expect(nosniffHeaderCreatorSpy).toBeCalledWith(dummyOptions.nosniff);
+
+      expect(referrerGuardHeaderCreatorSpy).toBeCalledTimes(1);
+      expect(referrerGuardHeaderCreatorSpy).toBeCalledWith(dummyOptions.referrerGuard);
 
       expect(xssProtectionHeaderCreatorSpy).toBeCalledTimes(1);
       expect(xssProtectionHeaderCreatorSpy).toBeCalledWith(dummyOptions.xssProtection);

@@ -28,6 +28,11 @@ type Options = Partial<{
    */
   nosniff: rules.NosniffOption;
   /**
+   * This is to set "Referrer-Policy" header and it's to prevent to be got referrer by other servers.
+   * You can specify one or more values for legacy browsers which does not support a specific value.
+   */
+  referrerGuard: rules.ReferrerGuardOption;
+  /**
    * This is to set "X-XSS-Protection" header and it's to avoid XSS attacks.
    * If you specify `"sanitize"` , this sets `"1"` to the header and browsers will sanitize unsafe area.
    * If you specify `"block-rendering"` , this sets `"1; mode=block"` to the header and browsers will block rendering a page.
@@ -45,6 +50,7 @@ export const createHeadersObject = (options: Options = {}) => {
     rules.createFrameGuardHeader(options.frameGuard),
     rules.createNoopenHeader(options.noopen),
     rules.createNosniffHeader(options.nosniff),
+    rules.createReferrerGuardHeader(options.referrerGuard),
     rules.createXSSProtectionHeader(options.xssProtection),
   ].forEach((header) => {
     if (header.value == undefined) return;
