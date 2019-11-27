@@ -26,7 +26,7 @@ describe("createHSTSHeaderValue", () => {
   const secondsOfTwoYears = 60 * 60 * 24 * 365 * 2;
 
   context("when giving undefined", () => {
-    it('should return "max-age=" set two years', () => {
+    it('should return "max-age" set two years', () => {
       expect(createHSTSHeaderValue()).toBe(`max-age=${secondsOfTwoYears}`);
       expect(createHSTSHeaderValue(null as any)).toBe(`max-age=${secondsOfTwoYears}`);
     });
@@ -39,7 +39,7 @@ describe("createHSTSHeaderValue", () => {
   });
 
   context("when giving true", () => {
-    it('should return "max-age=" set two years', () => {
+    it('should return "max-age" set two years', () => {
       expect(createHSTSHeaderValue(true)).toBe(`max-age=${secondsOfTwoYears}`);
     });
   });
@@ -52,7 +52,7 @@ describe("createHSTSHeaderValue", () => {
     });
 
     context("giving true in the first element", () => {
-      it('should return "max-age=" set two years', () => {
+      it('should return "max-age" set two years', () => {
         expect(createHSTSHeaderValue([true, {}])).toBe(`max-age=${secondsOfTwoYears}`);
       });
     });
@@ -60,7 +60,7 @@ describe("createHSTSHeaderValue", () => {
 
   context('when specifying "maxAge" option', () => {
     context("the number is valid", () => {
-      it('should return "max-age=" set the number', () => {
+      it('should return "max-age" set the number', () => {
         const dummyAge = 123;
         expect(createHSTSHeaderValue([true, { maxAge: dummyAge }])).toBe(`max-age=${dummyAge}`);
       });
@@ -75,13 +75,13 @@ describe("createHSTSHeaderValue", () => {
   });
 
   context('when specifying "includeSubDomains" option', () => {
-    context('specifying false to "includeSubDomains"', () => {
+    context("the option is false", () => {
       it('should return only "max-age"', () => {
         expect(createHSTSHeaderValue([true, { includeSubDomains: false }])).toBe(`max-age=${secondsOfTwoYears}`);
       });
     });
 
-    context('specifying true to "includeSubDomains"', () => {
+    context("the option is true", () => {
       it('should return "max-age" and "includeSubDomains"', () => {
         expect(createHSTSHeaderValue([true, { includeSubDomains: true }])).toBe(
           `max-age=${secondsOfTwoYears}; includeSubDomains`,
@@ -91,13 +91,13 @@ describe("createHSTSHeaderValue", () => {
   });
 
   context('when specifying "preload" option', () => {
-    context('specifying false to "preload"', () => {
+    context("the option is false", () => {
       it('should return only "max-age"', () => {
         expect(createHSTSHeaderValue([true, { preload: false }])).toBe(`max-age=${secondsOfTwoYears}`);
       });
     });
 
-    context('specifying true to "preload"', () => {
+    context("the option is true", () => {
       it('should return "max-age" and "preload"', () => {
         expect(createHSTSHeaderValue([true, { preload: true }])).toBe(`max-age=${secondsOfTwoYears}; preload`);
       });
@@ -105,7 +105,7 @@ describe("createHSTSHeaderValue", () => {
   });
 
   context("when specifying all options", () => {
-    context("specifying false to the options", () => {
+    context("the options are false", () => {
       it('should return only "max-age"', () => {
         expect(createHSTSHeaderValue([true, { includeSubDomains: false, preload: false }])).toBe(
           `max-age=${secondsOfTwoYears}`,
@@ -118,7 +118,7 @@ describe("createHSTSHeaderValue", () => {
       });
     });
 
-    context("specifying true to the options", () => {
+    context("the options are true", () => {
       it('should return "max-age" and the options', () => {
         expect(createHSTSHeaderValue([true, { includeSubDomains: true, preload: true }])).toBe(
           `max-age=${secondsOfTwoYears}; includeSubDomains; preload`,

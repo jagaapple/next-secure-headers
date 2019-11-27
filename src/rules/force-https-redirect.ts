@@ -13,9 +13,7 @@ export const createHSTSHeaderValue = (option?: ForceHTTPSRedirectOption): string
   if (option === true) return `max-age=${defaultMaxAge}`;
 
   if (Array.isArray(option)) {
-    if (option[0] !== true) {
-      throw new Error(`Invalid value for ${headerName} in the first option: ${option[0]}`);
-    }
+    if (option[0] !== true) throw new Error(`Invalid value for ${headerName} in the first option: ${option[0]}`);
 
     const maxAge = option[1].maxAge ?? defaultMaxAge;
     if (typeof maxAge !== "number" || !Number.isFinite(maxAge)) {

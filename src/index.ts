@@ -5,25 +5,25 @@ import * as rules from "./rules";
 
 type Options = Partial<{
   /**
-   * This is to set "Strict-Transport-Security (HSTS)" header and it's to avoid man-in-the-middle attacks during redirects from HTTP to HTTPS.
+   * This is to set "Strict-Transport-Security (HSTS)" header and it's to prevent man-in-the-middle attacks during redirects from HTTP to HTTPS.
    * To enable this is highly recommended if you use HTTPS (SSL) on your servers.
    * By default, this is set two years (63,072,000 seconds) as `max-age` .
    * @default [63072000]
    */
   forceHTTPSRedirect: rules.ForceHTTPSRedirectOption;
   /**
-   * This is to set "X-Frame-Options" header and it's to avoid clickjacking attacks.
+   * This is to set "X-Frame-Options" header and it's to prevent clickjacking attacks.
    * `"deny"` is highly recommendeed if you doesn't use frame elements such as `iframe` .
    * @default "deny"
    */
   frameGuard: rules.FrameGuardOption;
   /**
-   * This is to set "X-Download-Options" header and it's to avoid open downloaded files automatically for IE8+ (MIME Handling attacks).
+   * This is to set "X-Download-Options" header and it's to prevent to open downloaded files automatically for IE8+ (MIME Handling attacks).
    * @default "noopen"
    */
   noopen: rules.NoopenOption;
   /**
-   * This is to set "X-Content-Type-Options" header and it's to avoid MIME Sniffing attacks.
+   * This is to set "X-Content-Type-Options" header and it's to prevent MIME Sniffing attacks.
    * @default "nosniff"
    */
   nosniff: rules.NosniffOption;
@@ -33,7 +33,7 @@ type Options = Partial<{
    */
   referrerGuard: rules.ReferrerGuardOption;
   /**
-   * This is to set "X-XSS-Protection" header and it's to avoid XSS attacks.
+   * This is to set "X-XSS-Protection" header and it's to prevent XSS attacks.
    * If you specify `"sanitize"` , this sets `"1"` to the header and browsers will sanitize unsafe area.
    * If you specify `"block-rendering"` , this sets `"1; mode=block"` to the header and browsers will block rendering a page.
    * "X-XSS-Protection" blocks many XSS attacks, but Contents Security Policy is recommended to use comapred to this.
