@@ -1,4 +1,4 @@
-import { createExpectCTHeaderValue, createExpectCTHeader } from "./expect-ct";
+import { createExpectCTHeader, createExpectCTHeaderValue } from "./expect-ct";
 
 describe("createExpectCTHeader", () => {
   let headerValueCreatorSpy: jest.Mock<

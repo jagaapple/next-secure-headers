@@ -1,4 +1,4 @@
-import { createReferrerPolicyHeaderValue, createReferrerGuardHeader } from "./referrer-guard";
+import { createReferrerGuardHeader, createReferrerPolicyHeaderValue } from "./referrer-guard";
 
 describe("headerValueCreator", () => {
   let headerValueCreatorSpy: jest.Mock<
