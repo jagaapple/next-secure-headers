@@ -11,8 +11,7 @@
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "sourceType": "module",
-    "ecmaFeatures": { "jsx": true }
+    "sourceType": "module"
   },
   "rules": {
     "@typescript-eslint/no-explicit-any": "off",
