@@ -5,5 +5,6 @@ import withSecureHeaders from "next-secure-headers";
 class Application extends App {}
 
 export default withSecureHeaders({
-  forceHTTPSRedirect: [60 * 60 * 24 * 4, { includeSubDomains: true }],
+  forceHTTPSRedirect: [true, { maxAge: 60 * 60 * 24 * 4, includeSubDomains: true }],
+  referrerGuard: "same-origin",
 })(Application);
