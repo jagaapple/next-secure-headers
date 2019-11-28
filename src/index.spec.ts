@@ -4,6 +4,10 @@ import * as rules from "./rules";
 import { default as withSecureHeaders, createHeadersObject } from "./index";
 
 describe("createHeadersObject", () => {
+  let expectCTHeaderCreatorSpy: jest.SpyInstance<
+    ReturnType<typeof rules.createExpectCTHeader>,
+    Parameters<typeof rules.createExpectCTHeader>
+  >;
   let forceHTTPSRedirectHeaderCreatorSpy: jest.SpyInstance<
     ReturnType<typeof rules.createForceHTTPSRedirectHeader>,
     Parameters<typeof rules.createForceHTTPSRedirectHeader>
@@ -20,6 +24,10 @@ describe("createHeadersObject", () => {
     ReturnType<typeof rules.createNosniffHeader>,
     Parameters<typeof rules.createNosniffHeader>
   >;
+  let referrerGuardHeaderCreatorSpy: jest.SpyInstance<
+    ReturnType<typeof rules.createReferrerGuardHeader>,
+    Parameters<typeof rules.createReferrerGuardHeader>
+  >;
   let xssProtectionHeaderCreatorSpy: jest.SpyInstance<
     ReturnType<typeof rules.createXSSProtectionHeader>,
     Parameters<typeof rules.createXSSProtectionHeader>
@@ -27,22 +35,28 @@ describe("createHeadersObject", () => {
 
   describe("calling rules", () => {
     beforeAll(() => {
+      expectCTHeaderCreatorSpy = jest.spyOn(rules, "createExpectCTHeader");
       forceHTTPSRedirectHeaderCreatorSpy = jest.spyOn(rules, "createForceHTTPSRedirectHeader");
       frameGuardHeaderCreatorSpy = jest.spyOn(rules, "createFrameGuardHeader");
       noopenHeaderCreatorSpy = jest.spyOn(rules, "createNoopenHeader");
       nosniffHeaderCreatorSpy = jest.spyOn(rules, "createNosniffHeader");
+      referrerGuardHeaderCreatorSpy = jest.spyOn(rules, "createReferrerGuardHeader");
       xssProtectionHeaderCreatorSpy = jest.spyOn(rules, "createXSSProtectionHeader");
     });
 
     it("should call each rules and give proper options", () => {
       const dummyOptions: Parameters<typeof createHeadersObject>[0] = {
-        forceHTTPSRedirect: [123, { preload: true }],
+        expectCT: [true, { maxAge: 123, enforce: true, reportURI: "https://example.example.com" }],
+        forceHTTPSRedirect: [true, { maxAge: 123, preload: true }],
         frameGuard: ["allow-from", { uri: "https://example.example.com" }],
         noopen: false,
         nosniff: false,
         xssProtection: ["report", { uri: "https://example.example.com" }],
       };
       createHeadersObject(dummyOptions);
+
+      expect(expectCTHeaderCreatorSpy).toBeCalledTimes(1);
+      expect(expectCTHeaderCreatorSpy).toBeCalledWith(dummyOptions.expectCT);
 
       expect(forceHTTPSRedirectHeaderCreatorSpy).toBeCalledTimes(1);
       expect(forceHTTPSRedirectHeaderCreatorSpy).toBeCalledWith(dummyOptions.forceHTTPSRedirect);
@@ -55,6 +69,9 @@ describe("createHeadersObject", () => {
 
       expect(nosniffHeaderCreatorSpy).toBeCalledTimes(1);
       expect(nosniffHeaderCreatorSpy).toBeCalledWith(dummyOptions.nosniff);
+
+      expect(referrerGuardHeaderCreatorSpy).toBeCalledTimes(1);
+      expect(referrerGuardHeaderCreatorSpy).toBeCalledWith(dummyOptions.referrerGuard);
 
       expect(xssProtectionHeaderCreatorSpy).toBeCalledTimes(1);
       expect(xssProtectionHeaderCreatorSpy).toBeCalledWith(dummyOptions.xssProtection);

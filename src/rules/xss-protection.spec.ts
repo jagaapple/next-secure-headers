@@ -1,114 +1,128 @@
-import { createXSSProtectionHeader } from "./xss-protection";
+import { createXSSProtectionHeader, createXXSSProtectionHeaderValue } from "./xss-protection";
 
 describe("createXSSProtectionHeader", () => {
-  describe("return.name", () => {
-    it('should be "X-XSS-Protection', () => {
-      expect(createXSSProtectionHeader().name).toBe("X-XSS-Protection");
+  let headerValueCreatorSpy: jest.Mock<
+    ReturnType<typeof createXXSSProtectionHeaderValue>,
+    Parameters<typeof createXXSSProtectionHeaderValue>
+  >;
+  beforeAll(() => {
+    headerValueCreatorSpy = jest.fn(createXXSSProtectionHeaderValue);
+  });
+
+  it('should return "X-XSS-Protection" as object\'s "name" property', () => {
+    expect(createXSSProtectionHeader(undefined, headerValueCreatorSpy)).toHaveProperty("name", "X-XSS-Protection");
+  });
+
+  it('should call the second argument function and return a value from the function as object\'s "value" property', () => {
+    const dummyValue = "dummy-value";
+    headerValueCreatorSpy.mockReturnValue(dummyValue);
+
+    expect(createXSSProtectionHeader(undefined, headerValueCreatorSpy)).toHaveProperty("value", dummyValue);
+    expect(headerValueCreatorSpy).toBeCalledTimes(1);
+  });
+});
+
+describe("createXXSSProtectionHeaderValue", () => {
+  context("when giving undefined", () => {
+    it('should return "1"', () => {
+      expect(createXXSSProtectionHeaderValue()).toBe("1");
+      expect(createXXSSProtectionHeaderValue(null as any)).toBe("1");
     });
   });
 
-  describe("return.value", () => {
-    context("when giving undefined", () => {
-      it('should be "1"', () => {
-        expect(createXSSProtectionHeader().value).toBe("1");
-        expect(createXSSProtectionHeader(null as any).value).toBe("1");
-      });
+  context("when giving false", () => {
+    it('should return "0"', () => {
+      expect(createXXSSProtectionHeaderValue(false)).toBe("0");
     });
+  });
 
-    context("when giving false", () => {
-      it('should be "0"', () => {
-        expect(createXSSProtectionHeader(false).value).toBe("0");
-      });
+  context('when giving "sanitize"', () => {
+    it('should return "1"', () => {
+      expect(createXXSSProtectionHeaderValue("sanitize")).toBe("1");
     });
+  });
 
-    context('when giving "sanitize"', () => {
-      it('should be "1"', () => {
-        expect(createXSSProtectionHeader("sanitize").value).toBe("1");
-      });
+  context('when giving "block-rendering"', () => {
+    it('should return "0; mode=block"', () => {
+      expect(createXXSSProtectionHeaderValue("block-rendering")).toBe("1; mode=block");
     });
+  });
 
-    context('when giving "block-rendering"', () => {
-      it('should be "0; mode=block"', () => {
-        expect(createXSSProtectionHeader("block-rendering").value).toBe("1; mode=block");
-      });
-    });
-
-    context('when giving "report" as array', () => {
-      context('"uri" option is string', () => {
-        context('"uri" option is valid URI', () => {
-          it('should be "1; report=" string and escaped URI', () => {
-            expect(createXSSProtectionHeader(["report", { uri: "https://example.com" }]).value).toBe(
-              "1; report=https://example.com/",
-            );
-            expect(createXSSProtectionHeader(["report", { uri: "https://example.com/" }]).value).toBe(
-              "1; report=https://example.com/",
-            );
-            expect(createXSSProtectionHeader(["report", { uri: "https://example.com/foo-bar" }]).value).toBe(
-              "1; report=https://example.com/foo-bar",
-            );
-            expect(createXSSProtectionHeader(["report", { uri: "https://example.com/foo-bar/" }]).value).toBe(
-              "1; report=https://example.com/foo-bar/",
-            );
-            expect(createXSSProtectionHeader(["report", { uri: "https://日本語.com" }]).value).toBe(
-              "1; report=https://xn--wgv71a119e.com/",
-            );
-            expect(createXSSProtectionHeader(["report", { uri: "https://日本語.com/" }]).value).toBe(
-              "1; report=https://xn--wgv71a119e.com/",
-            );
-            expect(createXSSProtectionHeader(["report", { uri: "https://日本語.com/ほげ" }]).value).toBe(
-              "1; report=https://xn--wgv71a119e.com/%E3%81%BB%E3%81%92",
-            );
-            expect(createXSSProtectionHeader(["report", { uri: "https://日本語.com/ほげ/" }]).value).toBe(
-              "1; report=https://xn--wgv71a119e.com/%E3%81%BB%E3%81%92/",
-            );
-          });
-        });
-
-        context('"uri" option is invalid URI', () => {
-          it("should raise error", () => {
-            expect(() => createXSSProtectionHeader(["report", { uri: "example.com" }]).value).toThrow();
-            expect(() => createXSSProtectionHeader(["report", { uri: "foo-bar" }]).value).toThrow();
-            expect(() => createXSSProtectionHeader(["report", { uri: "ふがほげ" }]).value).toThrow();
-          });
-        });
-      });
-
-      context('"uri" option is URL object', () => {
-        it("should convert to string and return", () => {
-          expect(createXSSProtectionHeader(["report", { uri: new URL("https://example.com") }]).value).toBe(
+  context('when giving "report" as array', () => {
+    context('"uri" option is string', () => {
+      context('"uri" option is valid URI', () => {
+        it('should return "1; report=" string and escaped URI', () => {
+          expect(createXXSSProtectionHeaderValue(["report", { uri: "https://example.com" }])).toBe(
             "1; report=https://example.com/",
           );
-          expect(createXSSProtectionHeader(["report", { uri: new URL("https://example.com/") }]).value).toBe(
+          expect(createXXSSProtectionHeaderValue(["report", { uri: "https://example.com/" }])).toBe(
             "1; report=https://example.com/",
           );
-          expect(createXSSProtectionHeader(["report", { uri: new URL("https://example.com/foo-bar") }]).value).toBe(
+          expect(createXXSSProtectionHeaderValue(["report", { uri: "https://example.com/foo-bar" }])).toBe(
             "1; report=https://example.com/foo-bar",
           );
-          expect(createXSSProtectionHeader(["report", { uri: new URL("https://example.com/foo-bar/") }]).value).toBe(
+          expect(createXXSSProtectionHeaderValue(["report", { uri: "https://example.com/foo-bar/" }])).toBe(
             "1; report=https://example.com/foo-bar/",
           );
-          expect(createXSSProtectionHeader(["report", { uri: new URL("https://日本語.com") }]).value).toBe(
+          expect(createXXSSProtectionHeaderValue(["report", { uri: "https://日本語.com" }])).toBe(
             "1; report=https://xn--wgv71a119e.com/",
           );
-          expect(createXSSProtectionHeader(["report", { uri: new URL("https://日本語.com/") }]).value).toBe(
+          expect(createXXSSProtectionHeaderValue(["report", { uri: "https://日本語.com/" }])).toBe(
             "1; report=https://xn--wgv71a119e.com/",
           );
-          expect(createXSSProtectionHeader(["report", { uri: new URL("https://日本語.com/ほげ") }]).value).toBe(
+          expect(createXXSSProtectionHeaderValue(["report", { uri: "https://日本語.com/ほげ" }])).toBe(
             "1; report=https://xn--wgv71a119e.com/%E3%81%BB%E3%81%92",
           );
-          expect(createXSSProtectionHeader(["report", { uri: new URL("https://日本語.com/ほげ/") }]).value).toBe(
+          expect(createXXSSProtectionHeaderValue(["report", { uri: "https://日本語.com/ほげ/" }])).toBe(
             "1; report=https://xn--wgv71a119e.com/%E3%81%BB%E3%81%92/",
           );
         });
+      });
+
+      context('"uri" option is invalid URI', () => {
+        it("should raise error", () => {
+          expect(() => createXXSSProtectionHeaderValue(["report", { uri: "example.com" }])).toThrow();
+          expect(() => createXXSSProtectionHeaderValue(["report", { uri: "foo-bar" }])).toThrow();
+          expect(() => createXXSSProtectionHeaderValue(["report", { uri: "ふがほげ" }])).toThrow();
+        });
+      });
+    });
+
+    context('"uri" option is URL object', () => {
+      it("should convert to string and return", () => {
+        expect(createXXSSProtectionHeaderValue(["report", { uri: new URL("https://example.com") }])).toBe(
+          "1; report=https://example.com/",
+        );
+        expect(createXXSSProtectionHeaderValue(["report", { uri: new URL("https://example.com/") }])).toBe(
+          "1; report=https://example.com/",
+        );
+        expect(createXXSSProtectionHeaderValue(["report", { uri: new URL("https://example.com/foo-bar") }])).toBe(
+          "1; report=https://example.com/foo-bar",
+        );
+        expect(createXXSSProtectionHeaderValue(["report", { uri: new URL("https://example.com/foo-bar/") }])).toBe(
+          "1; report=https://example.com/foo-bar/",
+        );
+        expect(createXXSSProtectionHeaderValue(["report", { uri: new URL("https://日本語.com") }])).toBe(
+          "1; report=https://xn--wgv71a119e.com/",
+        );
+        expect(createXXSSProtectionHeaderValue(["report", { uri: new URL("https://日本語.com/") }])).toBe(
+          "1; report=https://xn--wgv71a119e.com/",
+        );
+        expect(createXXSSProtectionHeaderValue(["report", { uri: new URL("https://日本語.com/ほげ") }])).toBe(
+          "1; report=https://xn--wgv71a119e.com/%E3%81%BB%E3%81%92",
+        );
+        expect(createXXSSProtectionHeaderValue(["report", { uri: new URL("https://日本語.com/ほげ/") }])).toBe(
+          "1; report=https://xn--wgv71a119e.com/%E3%81%BB%E3%81%92/",
+        );
       });
     });
   });
 
   context("when giving invalid value", () => {
     it("should raise error", () => {
-      expect(() => createXSSProtectionHeader(true as any)).toThrow();
-      expect(() => createXSSProtectionHeader("foo" as any)).toThrow();
-      expect(() => createXSSProtectionHeader([] as any)).toThrow();
+      expect(() => createXXSSProtectionHeaderValue(true as any)).toThrow();
+      expect(() => createXXSSProtectionHeaderValue("foo" as any)).toThrow();
+      expect(() => createXXSSProtectionHeaderValue([] as any)).toThrow();
     });
   });
 });

@@ -1,5 +1,7 @@
-export * from "./force-https-redirect";
-export * from "./frame-guard";
-export * from "./noopen";
-export * from "./nosniff";
-export * from "./xss-protection";
+export { ExpectCTOption, createExpectCTHeader } from "./expect-ct";
+export { ForceHTTPSRedirectOption, createForceHTTPSRedirectHeader } from "./force-https-redirect";
+export { FrameGuardOption, createFrameGuardHeader } from "./frame-guard";
+export { NoopenOption, createNoopenHeader } from "./noopen";
+export { NosniffOption, createNosniffHeader } from "./nosniff";
+export { ReferrerGuardOption, createReferrerGuardHeader } from "./referrer-guard";
+export { XSSProtectionOption, createXSSProtectionHeader } from "./xss-protection";
