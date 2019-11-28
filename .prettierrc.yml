@@ -19,8 +19,6 @@ quoteProps: "as-needed"
 # Use single quotes instead of double quotes in JSX.
 # jsxSingleQuote: false
 
-# Use single quotes instead of double quotes in JSX.
-# jsxSingleQuote: false
 # Print trailing commas wherever possible when multi-line (A single-line array, for example, never gets trailing commas).
 trailingComma: "all"
 
