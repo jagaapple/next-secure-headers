@@ -19,7 +19,6 @@
     "CODE_OF_CONDUCT.md",
     "LICENSE",
     "package.json",
-    "package-lock.json",
     "README.md"
   ],
   "main": "lib/index.js",
