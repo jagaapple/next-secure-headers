@@ -1,4 +1,4 @@
-import { createReferrerGuardHeader, createReferrerPolicyHeaderValue } from "./referrer-guard";
+import { createReferrerPolicyHeader, createReferrerPolicyHeaderValue } from "./referrer-policy";
 
 describe("headerValueCreator", () => {
   let headerValueCreatorSpy: jest.Mock<
@@ -10,14 +10,14 @@ describe("headerValueCreator", () => {
   });
 
   it('should return "Referrer-Policy" as object\'s "name" property', () => {
-    expect(createReferrerGuardHeader(undefined, headerValueCreatorSpy)).toHaveProperty("name", "Referrer-Policy");
+    expect(createReferrerPolicyHeader(undefined, headerValueCreatorSpy)).toHaveProperty("name", "Referrer-Policy");
   });
 
   it('should call the second argument function and return a value from the function as object\'s "value" property', () => {
     const dummyValue = "dummy-value";
     headerValueCreatorSpy.mockReturnValue(dummyValue);
 
-    expect(createReferrerGuardHeader(undefined, headerValueCreatorSpy)).toHaveProperty("value", dummyValue);
+    expect(createReferrerPolicyHeader(undefined, headerValueCreatorSpy)).toHaveProperty("value", dummyValue);
     expect(headerValueCreatorSpy).toBeCalledTimes(1);
   });
 });

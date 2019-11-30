@@ -10,11 +10,11 @@ const supportedValues = [
   "strict-origin-when-cross-origin",
 ] as const;
 type SupportedValue = typeof supportedValues[number];
-export type ReferrerGuardOption = false | SupportedValue | SupportedValue[];
+export type ReferrerPolicyOption = false | SupportedValue | SupportedValue[];
 
 const headerName = "Referrer-Policy";
 
-export const createReferrerPolicyHeaderValue = (option?: ReferrerGuardOption): string | undefined => {
+export const createReferrerPolicyHeaderValue = (option?: ReferrerPolicyOption): string | undefined => {
   if (option == undefined) return;
   if (option === false) return;
 
@@ -28,8 +28,8 @@ export const createReferrerPolicyHeaderValue = (option?: ReferrerGuardOption): s
   return values.join(", ");
 };
 
-export const createReferrerGuardHeader = (
-  option?: ReferrerGuardOption,
+export const createReferrerPolicyHeader = (
+  option?: ReferrerPolicyOption,
   headerValueCreator = createReferrerPolicyHeaderValue,
 ): ResponseHeader => {
   const value = headerValueCreator(option);
