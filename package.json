@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Sets secure response headers for Next.js.",
   "keywords": [
-    "next.js",
+    "Next.js",
     "headers",
     "security",
     "csp"
@@ -30,7 +30,7 @@
   },
   "scripts": {
     "prebuild": "rm -rf ./lib",
-    "build": "tsc -p ./tsconfig.json",
+    "build": "tsc",
     "lint": "eslint ./src/**/*.ts",
     "fix": "eslint --fix ./src/**/*.ts",
     "prepublishOnly": "npm run build",

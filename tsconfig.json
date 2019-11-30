@@ -7,7 +7,7 @@
     "declaration": true,
     "jsx": "preserve",
     "lib": [
-      "es2018",
+      "es2020",
       "dom"
     ],
     "module": "commonjs",
