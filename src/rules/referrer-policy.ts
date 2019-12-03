@@ -1,4 +1,5 @@
 import { ResponseHeader } from "../shared";
+import { wrapArray } from "./shared";
 
 const supportedValues = [
   "no-referrer",
@@ -18,8 +19,7 @@ export const createReferrerPolicyHeaderValue = (option?: ReferrerPolicyOption): 
   if (option == undefined) return;
   if (option === false) return;
 
-  const values = Array.isArray(option) ? option : [option];
-
+  const values = wrapArray(option);
   values.forEach((value) => {
     if ((value as string) === "unsafe-url") throw new Error(`Cannot specify a dangerous value for ${headerName}: ${value}`);
     if (!supportedValues.includes(value)) throw new Error(`Invalid value for ${headerName}: ${value}`);
