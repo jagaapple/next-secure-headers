@@ -31,7 +31,9 @@ export const createReferrerPolicyHeaderValue = (option?: ReferrerPolicyOption): 
 export const createReferrerPolicyHeader = (
   option?: ReferrerPolicyOption,
   headerValueCreator = createReferrerPolicyHeaderValue,
-): ResponseHeader => {
+): ResponseHeader | undefined => {
+  if (option == undefined) return;
+
   const value = headerValueCreator(option);
 
   return { name: headerName, value };

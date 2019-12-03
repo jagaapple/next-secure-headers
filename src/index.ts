@@ -58,6 +58,7 @@ export const createHeadersObject = (options: Options = {}) => {
     rules.createReferrerPolicyHeader(options.referrerPolicy),
     rules.createXSSProtectionHeader(options.xssProtection),
   ].forEach((header) => {
+    if (header == undefined) return;
     if (header.value == undefined) return;
 
     newHeaders[header.name] = header.value;
