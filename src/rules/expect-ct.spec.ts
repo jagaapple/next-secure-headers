@@ -1,3 +1,4 @@
+import { encodeStrictURI } from "./shared";
 import { createExpectCTHeader, createExpectCTHeaderValue } from "./expect-ct";
 
 describe("createExpectCTHeader", () => {
@@ -89,72 +90,22 @@ describe("createExpectCTHeaderValue", () => {
   });
 
   context('when specifying "reportURI" option', () => {
-    context("the option is string", () => {
-      context("the option is valid URI", () => {
-        it('should return "allow-from" string and escaped URI', () => {
-          expect(createExpectCTHeaderValue([true, { reportURI: "https://example.com" }])).toBe(
-            `max-age=${secondsOfOneDay}, report-uri=https://example.com/`,
-          );
-          expect(createExpectCTHeaderValue([true, { reportURI: "https://example.com/" }])).toBe(
-            `max-age=${secondsOfOneDay}, report-uri=https://example.com/`,
-          );
-          expect(createExpectCTHeaderValue([true, { reportURI: "https://example.com/foo-bar" }])).toBe(
-            `max-age=${secondsOfOneDay}, report-uri=https://example.com/foo-bar`,
-          );
-          expect(createExpectCTHeaderValue([true, { reportURI: "https://example.com/foo-bar/" }])).toBe(
-            `max-age=${secondsOfOneDay}, report-uri=https://example.com/foo-bar/`,
-          );
-          expect(createExpectCTHeaderValue([true, { reportURI: "https://日本語.com" }])).toBe(
-            `max-age=${secondsOfOneDay}, report-uri=https://xn--wgv71a119e.com/`,
-          );
-          expect(createExpectCTHeaderValue([true, { reportURI: "https://日本語.com/" }])).toBe(
-            `max-age=${secondsOfOneDay}, report-uri=https://xn--wgv71a119e.com/`,
-          );
-          expect(createExpectCTHeaderValue([true, { reportURI: "https://日本語.com/ほげ" }])).toBe(
-            `max-age=${secondsOfOneDay}, report-uri=https://xn--wgv71a119e.com/%E3%81%BB%E3%81%92`,
-          );
-          expect(createExpectCTHeaderValue([true, { reportURI: "https://日本語.com/ほげ/" }])).toBe(
-            `max-age=${secondsOfOneDay}, report-uri=https://xn--wgv71a119e.com/%E3%81%BB%E3%81%92/`,
-          );
-        });
-      });
-
-      context("the option is invalid URI", () => {
-        it("should raise error", () => {
-          expect(() => createExpectCTHeaderValue([true, { reportURI: "example.com" }])).toThrow();
-          expect(() => createExpectCTHeaderValue([true, { reportURI: "foo-bar" }])).toThrow();
-          expect(() => createExpectCTHeaderValue([true, { reportURI: "ふがほげ" }])).toThrow();
-        });
-      });
+    let strictURIEncoderSpy: jest.Mock<ReturnType<typeof encodeStrictURI>, Parameters<typeof encodeStrictURI>>;
+    beforeAll(() => {
+      strictURIEncoderSpy = jest.fn(encodeStrictURI);
     });
 
-    context("the option is URL object", () => {
-      it("should convert to string and return", () => {
-        expect(createExpectCTHeaderValue([true, { reportURI: new URL("https://example.com") }])).toBe(
-          `max-age=${secondsOfOneDay}, report-uri=https://example.com/`,
-        );
-        expect(createExpectCTHeaderValue([true, { reportURI: new URL("https://example.com/") }])).toBe(
-          `max-age=${secondsOfOneDay}, report-uri=https://example.com/`,
-        );
-        expect(createExpectCTHeaderValue([true, { reportURI: new URL("https://example.com/foo-bar") }])).toBe(
-          `max-age=${secondsOfOneDay}, report-uri=https://example.com/foo-bar`,
-        );
-        expect(createExpectCTHeaderValue([true, { reportURI: new URL("https://example.com/foo-bar/") }])).toBe(
-          `max-age=${secondsOfOneDay}, report-uri=https://example.com/foo-bar/`,
-        );
-        expect(createExpectCTHeaderValue([true, { reportURI: new URL("https://日本語.com") }])).toBe(
-          `max-age=${secondsOfOneDay}, report-uri=https://xn--wgv71a119e.com/`,
-        );
-        expect(createExpectCTHeaderValue([true, { reportURI: new URL("https://日本語.com/") }])).toBe(
-          `max-age=${secondsOfOneDay}, report-uri=https://xn--wgv71a119e.com/`,
-        );
-        expect(createExpectCTHeaderValue([true, { reportURI: new URL("https://日本語.com/ほげ") }])).toBe(
-          `max-age=${secondsOfOneDay}, report-uri=https://xn--wgv71a119e.com/%E3%81%BB%E3%81%92`,
-        );
-        expect(createExpectCTHeaderValue([true, { reportURI: new URL("https://日本語.com/ほげ/") }])).toBe(
-          `max-age=${secondsOfOneDay}, report-uri=https://xn--wgv71a119e.com/%E3%81%BB%E3%81%92/`,
-        );
-      });
+    it('should call "encodeStrictURI"', () => {
+      const uri = "https://example.com/";
+      createExpectCTHeaderValue([true, { reportURI: uri }], strictURIEncoderSpy);
+
+      expect(strictURIEncoderSpy).toBeCalledTimes(1);
+      expect(strictURIEncoderSpy).toBeCalledWith(uri);
+    });
+
+    it('should return "max-age" and the URI"', () => {
+      const uri = "https://example.com/";
+      expect(createExpectCTHeaderValue([true, { reportURI: uri }])).toBe(`max-age=${secondsOfOneDay}, report-uri=${uri}`);
     });
   });
 

@@ -1,3 +1,4 @@
+import { encodeStrictURI } from "./shared";
 import { createFrameGuardHeader, createXFrameOptionsHeaderValue } from "./frame-guard";
 
 describe("createFrameGuardHeader", () => {
@@ -49,72 +50,22 @@ describe("createXFrameOptionsHeaderValue", () => {
   });
 
   context('when giving "allow-from" as array', () => {
-    context('"uri" option is string', () => {
-      context('"uri" option is valid URI', () => {
-        it('should return "allow-from" string and escaped URI', () => {
-          expect(createXFrameOptionsHeaderValue(["allow-from", { uri: "https://example.com" }])).toBe(
-            "allow-from https://example.com/",
-          );
-          expect(createXFrameOptionsHeaderValue(["allow-from", { uri: "https://example.com/" }])).toBe(
-            "allow-from https://example.com/",
-          );
-          expect(createXFrameOptionsHeaderValue(["allow-from", { uri: "https://example.com/foo-bar" }])).toBe(
-            "allow-from https://example.com/foo-bar",
-          );
-          expect(createXFrameOptionsHeaderValue(["allow-from", { uri: "https://example.com/foo-bar/" }])).toBe(
-            "allow-from https://example.com/foo-bar/",
-          );
-          expect(createXFrameOptionsHeaderValue(["allow-from", { uri: "https://日本語.com" }])).toBe(
-            "allow-from https://xn--wgv71a119e.com/",
-          );
-          expect(createXFrameOptionsHeaderValue(["allow-from", { uri: "https://日本語.com/" }])).toBe(
-            "allow-from https://xn--wgv71a119e.com/",
-          );
-          expect(createXFrameOptionsHeaderValue(["allow-from", { uri: "https://日本語.com/ほげ" }])).toBe(
-            "allow-from https://xn--wgv71a119e.com/%E3%81%BB%E3%81%92",
-          );
-          expect(createXFrameOptionsHeaderValue(["allow-from", { uri: "https://日本語.com/ほげ/" }])).toBe(
-            "allow-from https://xn--wgv71a119e.com/%E3%81%BB%E3%81%92/",
-          );
-        });
-      });
-
-      context('"uri" option is invalid URI', () => {
-        it("should raise error", () => {
-          expect(() => createXFrameOptionsHeaderValue(["allow-from", { uri: "example.com" }])).toThrow();
-          expect(() => createXFrameOptionsHeaderValue(["allow-from", { uri: "foo-bar" }])).toThrow();
-          expect(() => createXFrameOptionsHeaderValue(["allow-from", { uri: "ふがほげ" }])).toThrow();
-        });
-      });
+    let strictURIEncoderSpy: jest.Mock<ReturnType<typeof encodeStrictURI>, Parameters<typeof encodeStrictURI>>;
+    beforeAll(() => {
+      strictURIEncoderSpy = jest.fn(encodeStrictURI);
     });
 
-    context('"uri" option is URL object', () => {
-      it("should convert to string and return", () => {
-        expect(createXFrameOptionsHeaderValue(["allow-from", { uri: new URL("https://example.com") }])).toBe(
-          "allow-from https://example.com/",
-        );
-        expect(createXFrameOptionsHeaderValue(["allow-from", { uri: new URL("https://example.com/") }])).toBe(
-          "allow-from https://example.com/",
-        );
-        expect(createXFrameOptionsHeaderValue(["allow-from", { uri: new URL("https://example.com/foo-bar") }])).toBe(
-          "allow-from https://example.com/foo-bar",
-        );
-        expect(createXFrameOptionsHeaderValue(["allow-from", { uri: new URL("https://example.com/foo-bar/") }])).toBe(
-          "allow-from https://example.com/foo-bar/",
-        );
-        expect(createXFrameOptionsHeaderValue(["allow-from", { uri: new URL("https://日本語.com") }])).toBe(
-          "allow-from https://xn--wgv71a119e.com/",
-        );
-        expect(createXFrameOptionsHeaderValue(["allow-from", { uri: new URL("https://日本語.com/") }])).toBe(
-          "allow-from https://xn--wgv71a119e.com/",
-        );
-        expect(createXFrameOptionsHeaderValue(["allow-from", { uri: new URL("https://日本語.com/ほげ") }])).toBe(
-          "allow-from https://xn--wgv71a119e.com/%E3%81%BB%E3%81%92",
-        );
-        expect(createXFrameOptionsHeaderValue(["allow-from", { uri: new URL("https://日本語.com/ほげ/") }])).toBe(
-          "allow-from https://xn--wgv71a119e.com/%E3%81%BB%E3%81%92/",
-        );
-      });
+    it('should call "encodeStrictURI"', () => {
+      const uri = "https://example.com/";
+      createXFrameOptionsHeaderValue(["allow-from", { uri }], strictURIEncoderSpy);
+
+      expect(strictURIEncoderSpy).toBeCalledTimes(1);
+      expect(strictURIEncoderSpy).toBeCalledWith(uri);
+    });
+
+    it('should return "allow-from" and the URI', () => {
+      const uri = "https://example.com/";
+      expect(createXFrameOptionsHeaderValue(["allow-from", { uri }])).toBe(`allow-from ${uri}`);
     });
   });
 

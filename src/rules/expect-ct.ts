@@ -1,11 +1,12 @@
 import { ResponseHeader } from "../shared";
+import { encodeStrictURI } from "./shared";
 
 export type ExpectCTOption = boolean | [true, Partial<{ maxAge: number; enforce: boolean; reportURI: string | URL }>];
 
 const headerName = "Expect-CT";
 const defaultMaxAge = 60 * 60 * 24; // 1 day
 
-export const createExpectCTHeaderValue = (option?: ExpectCTOption): string | undefined => {
+export const createExpectCTHeaderValue = (option?: ExpectCTOption, strictURIEncoder = encodeStrictURI): string | undefined => {
   if (option == undefined) return;
   if (option === false) return;
   if (option === true) return `max-age=${defaultMaxAge}`;
@@ -22,7 +23,7 @@ export const createExpectCTHeaderValue = (option?: ExpectCTOption): string | und
     return [
       `max-age=${maxAge}`,
       enforce ? "enforce" : undefined,
-      reportURI != undefined ? `report-uri=${new URL(reportURI.toString())}` : undefined,
+      reportURI != undefined ? `report-uri=${strictURIEncoder(reportURI)}` : undefined,
     ]
       .filter((value) => value != undefined)
       .join(", ");
