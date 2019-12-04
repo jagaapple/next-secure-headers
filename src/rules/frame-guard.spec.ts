@@ -1,24 +1,26 @@
+import { encodeStrictURI } from "./shared";
 import { createFrameGuardHeader, createXFrameOptionsHeaderValue } from "./frame-guard";
 
 describe("createFrameGuardHeader", () => {
-  let headerValueCreatorSpy: jest.Mock<
+  let headerValueCreatorMock: jest.Mock<
     ReturnType<typeof createXFrameOptionsHeaderValue>,
     Parameters<typeof createXFrameOptionsHeaderValue>
   >;
   beforeAll(() => {
-    headerValueCreatorSpy = jest.fn(createXFrameOptionsHeaderValue);
+    headerValueCreatorMock = jest.fn(createXFrameOptionsHeaderValue);
   });
 
   it('should return "X-Frame-Options" as object\'s "name" property', () => {
-    expect(createFrameGuardHeader(undefined, headerValueCreatorSpy)).toHaveProperty("name", "X-Frame-Options");
+    expect(createFrameGuardHeader(undefined, headerValueCreatorMock)).toHaveProperty("name", "X-Frame-Options");
   });
 
   it('should call the second argument function and return a value from the function as object\'s "value" property', () => {
+    const dummyOption: Parameters<typeof createFrameGuardHeader>[0] = undefined;
     const dummyValue = "dummy-value";
-    headerValueCreatorSpy.mockReturnValue(dummyValue);
+    headerValueCreatorMock.mockReturnValue(dummyValue);
 
-    expect(createFrameGuardHeader(undefined, headerValueCreatorSpy)).toHaveProperty("value", dummyValue);
-    expect(headerValueCreatorSpy).toBeCalledTimes(1);
+    expect(createFrameGuardHeader(dummyOption, headerValueCreatorMock)).toHaveProperty("value", dummyValue);
+    expect(headerValueCreatorMock).toBeCalledWith(dummyOption);
   });
 });
 
@@ -49,72 +51,21 @@ describe("createXFrameOptionsHeaderValue", () => {
   });
 
   context('when giving "allow-from" as array', () => {
-    context('"uri" option is string', () => {
-      context('"uri" option is valid URI', () => {
-        it('should return "allow-from" string and escaped URI', () => {
-          expect(createXFrameOptionsHeaderValue(["allow-from", { uri: "https://example.com" }])).toBe(
-            "allow-from https://example.com/",
-          );
-          expect(createXFrameOptionsHeaderValue(["allow-from", { uri: "https://example.com/" }])).toBe(
-            "allow-from https://example.com/",
-          );
-          expect(createXFrameOptionsHeaderValue(["allow-from", { uri: "https://example.com/foo-bar" }])).toBe(
-            "allow-from https://example.com/foo-bar",
-          );
-          expect(createXFrameOptionsHeaderValue(["allow-from", { uri: "https://example.com/foo-bar/" }])).toBe(
-            "allow-from https://example.com/foo-bar/",
-          );
-          expect(createXFrameOptionsHeaderValue(["allow-from", { uri: "https://日本語.com" }])).toBe(
-            "allow-from https://xn--wgv71a119e.com/",
-          );
-          expect(createXFrameOptionsHeaderValue(["allow-from", { uri: "https://日本語.com/" }])).toBe(
-            "allow-from https://xn--wgv71a119e.com/",
-          );
-          expect(createXFrameOptionsHeaderValue(["allow-from", { uri: "https://日本語.com/ほげ" }])).toBe(
-            "allow-from https://xn--wgv71a119e.com/%E3%81%BB%E3%81%92",
-          );
-          expect(createXFrameOptionsHeaderValue(["allow-from", { uri: "https://日本語.com/ほげ/" }])).toBe(
-            "allow-from https://xn--wgv71a119e.com/%E3%81%BB%E3%81%92/",
-          );
-        });
-      });
-
-      context('"uri" option is invalid URI', () => {
-        it("should raise error", () => {
-          expect(() => createXFrameOptionsHeaderValue(["allow-from", { uri: "example.com" }])).toThrow();
-          expect(() => createXFrameOptionsHeaderValue(["allow-from", { uri: "foo-bar" }])).toThrow();
-          expect(() => createXFrameOptionsHeaderValue(["allow-from", { uri: "ふがほげ" }])).toThrow();
-        });
-      });
+    let strictURIEncoderMock: jest.Mock<ReturnType<typeof encodeStrictURI>, Parameters<typeof encodeStrictURI>>;
+    beforeAll(() => {
+      strictURIEncoderMock = jest.fn(encodeStrictURI);
     });
 
-    context('"uri" option is URL object', () => {
-      it("should convert to string and return", () => {
-        expect(createXFrameOptionsHeaderValue(["allow-from", { uri: new URL("https://example.com") }])).toBe(
-          "allow-from https://example.com/",
-        );
-        expect(createXFrameOptionsHeaderValue(["allow-from", { uri: new URL("https://example.com/") }])).toBe(
-          "allow-from https://example.com/",
-        );
-        expect(createXFrameOptionsHeaderValue(["allow-from", { uri: new URL("https://example.com/foo-bar") }])).toBe(
-          "allow-from https://example.com/foo-bar",
-        );
-        expect(createXFrameOptionsHeaderValue(["allow-from", { uri: new URL("https://example.com/foo-bar/") }])).toBe(
-          "allow-from https://example.com/foo-bar/",
-        );
-        expect(createXFrameOptionsHeaderValue(["allow-from", { uri: new URL("https://日本語.com") }])).toBe(
-          "allow-from https://xn--wgv71a119e.com/",
-        );
-        expect(createXFrameOptionsHeaderValue(["allow-from", { uri: new URL("https://日本語.com/") }])).toBe(
-          "allow-from https://xn--wgv71a119e.com/",
-        );
-        expect(createXFrameOptionsHeaderValue(["allow-from", { uri: new URL("https://日本語.com/ほげ") }])).toBe(
-          "allow-from https://xn--wgv71a119e.com/%E3%81%BB%E3%81%92",
-        );
-        expect(createXFrameOptionsHeaderValue(["allow-from", { uri: new URL("https://日本語.com/ほげ/") }])).toBe(
-          "allow-from https://xn--wgv71a119e.com/%E3%81%BB%E3%81%92/",
-        );
-      });
+    it('should call "encodeStrictURI"', () => {
+      const uri = "https://example.com/";
+      createXFrameOptionsHeaderValue(["allow-from", { uri }], strictURIEncoderMock);
+
+      expect(strictURIEncoderMock).toBeCalledWith(uri);
+    });
+
+    it('should return "allow-from" and the URI', () => {
+      const uri = "https://example.com/";
+      expect(createXFrameOptionsHeaderValue(["allow-from", { uri }])).toBe(`allow-from ${uri}`);
     });
   });
 

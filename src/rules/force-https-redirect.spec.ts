@@ -1,24 +1,25 @@
 import { createForceHTTPSRedirectHeader, createHSTSHeaderValue } from "./force-https-redirect";
 
 describe("createForceHTTPSRedirectHeader", () => {
-  let headerValueCreatorSpy: jest.Mock<ReturnType<typeof createHSTSHeaderValue>, Parameters<typeof createHSTSHeaderValue>>;
+  let headerValueCreatorMock: jest.Mock<ReturnType<typeof createHSTSHeaderValue>, Parameters<typeof createHSTSHeaderValue>>;
   beforeAll(() => {
-    headerValueCreatorSpy = jest.fn(createHSTSHeaderValue);
+    headerValueCreatorMock = jest.fn(createHSTSHeaderValue);
   });
 
   it('should return "Strict-Transport-Security" as object\'s "name" property', () => {
-    expect(createForceHTTPSRedirectHeader(undefined, headerValueCreatorSpy)).toHaveProperty(
+    expect(createForceHTTPSRedirectHeader(undefined, headerValueCreatorMock)).toHaveProperty(
       "name",
       "Strict-Transport-Security",
     );
   });
 
   it('should call the second argument function and return a value from the function as object\'s "value" property', () => {
+    const dummyOption: Parameters<typeof createForceHTTPSRedirectHeader>[0] = undefined;
     const dummyValue = "dummy-value";
-    headerValueCreatorSpy.mockReturnValue(dummyValue);
+    headerValueCreatorMock.mockReturnValue(dummyValue);
 
-    expect(createForceHTTPSRedirectHeader(undefined, headerValueCreatorSpy)).toHaveProperty("value", dummyValue);
-    expect(headerValueCreatorSpy).toBeCalledTimes(1);
+    expect(createForceHTTPSRedirectHeader(dummyOption, headerValueCreatorMock)).toHaveProperty("value", dummyValue);
+    expect(headerValueCreatorMock).toBeCalledWith(dummyOption);
   });
 });
 

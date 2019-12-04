@@ -1,24 +1,25 @@
 import { createNosniffHeader, createXContentTypeOptionsHeaderValue } from "./nosniff";
 
 describe("createNosniffHeader", () => {
-  let headerValueCreatorSpy: jest.Mock<
+  let headerValueCreatorMock: jest.Mock<
     ReturnType<typeof createXContentTypeOptionsHeaderValue>,
     Parameters<typeof createXContentTypeOptionsHeaderValue>
   >;
   beforeAll(() => {
-    headerValueCreatorSpy = jest.fn(createXContentTypeOptionsHeaderValue);
+    headerValueCreatorMock = jest.fn(createXContentTypeOptionsHeaderValue);
   });
 
   it('should return "X-Content-Type-Options" as object\'s "name" property', () => {
-    expect(createNosniffHeader(undefined, headerValueCreatorSpy)).toHaveProperty("name", "X-Content-Type-Options");
+    expect(createNosniffHeader(undefined, headerValueCreatorMock)).toHaveProperty("name", "X-Content-Type-Options");
   });
 
   it('should call the second argument function and return a value from the function as object\'s "value" property', () => {
+    const dummyOption: Parameters<typeof createNosniffHeader>[0] = undefined;
     const dummyValue = "dummy-value";
-    headerValueCreatorSpy.mockReturnValue(dummyValue);
+    headerValueCreatorMock.mockReturnValue(dummyValue);
 
-    expect(createNosniffHeader(undefined, headerValueCreatorSpy)).toHaveProperty("value", dummyValue);
-    expect(headerValueCreatorSpy).toBeCalledTimes(1);
+    expect(createNosniffHeader(dummyOption, headerValueCreatorMock)).toHaveProperty("value", dummyValue);
+    expect(headerValueCreatorMock).toBeCalledWith(dummyOption);
   });
 });
 

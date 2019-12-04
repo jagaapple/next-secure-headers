@@ -1,24 +1,25 @@
 import { createNoopenHeader, createXDownloadOptionsHeaderValue } from "./noopen";
 
 describe("createNoopenHeader", () => {
-  let headerValueCreatorSpy: jest.Mock<
+  let headerValueCreatorMock: jest.Mock<
     ReturnType<typeof createXDownloadOptionsHeaderValue>,
     Parameters<typeof createXDownloadOptionsHeaderValue>
   >;
   beforeAll(() => {
-    headerValueCreatorSpy = jest.fn(createXDownloadOptionsHeaderValue);
+    headerValueCreatorMock = jest.fn(createXDownloadOptionsHeaderValue);
   });
 
   it('should return "X-Download-Options" as object\'s "name" property', () => {
-    expect(createNoopenHeader(undefined, headerValueCreatorSpy)).toHaveProperty("name", "X-Download-Options");
+    expect(createNoopenHeader(undefined, headerValueCreatorMock)).toHaveProperty("name", "X-Download-Options");
   });
 
   it('should call the second argument function and return a value from the function as object\'s "value" property', () => {
+    const dummyOption: Parameters<typeof createNoopenHeader>[0] = undefined;
     const dummyValue = "dummy-value";
-    headerValueCreatorSpy.mockReturnValue(dummyValue);
+    headerValueCreatorMock.mockReturnValue(dummyValue);
 
-    expect(createNoopenHeader(undefined, headerValueCreatorSpy)).toHaveProperty("value", dummyValue);
-    expect(headerValueCreatorSpy).toBeCalledTimes(1);
+    expect(createNoopenHeader(dummyOption, headerValueCreatorMock)).toHaveProperty("value", dummyValue);
+    expect(headerValueCreatorMock).toBeCalledWith(dummyOption);
   });
 });
 

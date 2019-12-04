@@ -6,5 +6,5 @@ class Application extends App {}
 
 export default withSecureHeaders({
   forceHTTPSRedirect: [true, { maxAge: 60 * 60 * 24 * 4, includeSubDomains: true }],
-  referrerGuard: "same-origin",
+  referrerPolicy: "same-origin",
 })(Application);

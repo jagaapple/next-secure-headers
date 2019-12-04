@@ -4,6 +4,10 @@ import * as rules from "./rules";
 import { default as withSecureHeaders, createHeadersObject } from "./index";
 
 describe("createHeadersObject", () => {
+  let contentSecurityPolicyHeaderCreatorSpy: jest.SpyInstance<
+    ReturnType<typeof rules.createContentSecurityPolicyHeader>,
+    Parameters<typeof rules.createContentSecurityPolicyHeader>
+  >;
   let expectCTHeaderCreatorSpy: jest.SpyInstance<
     ReturnType<typeof rules.createExpectCTHeader>,
     Parameters<typeof rules.createExpectCTHeader>
@@ -24,9 +28,9 @@ describe("createHeadersObject", () => {
     ReturnType<typeof rules.createNosniffHeader>,
     Parameters<typeof rules.createNosniffHeader>
   >;
-  let referrerGuardHeaderCreatorSpy: jest.SpyInstance<
-    ReturnType<typeof rules.createReferrerGuardHeader>,
-    Parameters<typeof rules.createReferrerGuardHeader>
+  let referrerPolicyHeaderCreatorSpy: jest.SpyInstance<
+    ReturnType<typeof rules.createReferrerPolicyHeader>,
+    Parameters<typeof rules.createReferrerPolicyHeader>
   >;
   let xssProtectionHeaderCreatorSpy: jest.SpyInstance<
     ReturnType<typeof rules.createXSSProtectionHeader>,
@@ -35,17 +39,19 @@ describe("createHeadersObject", () => {
 
   describe("calling rules", () => {
     beforeAll(() => {
+      contentSecurityPolicyHeaderCreatorSpy = jest.spyOn(rules, "createContentSecurityPolicyHeader");
       expectCTHeaderCreatorSpy = jest.spyOn(rules, "createExpectCTHeader");
       forceHTTPSRedirectHeaderCreatorSpy = jest.spyOn(rules, "createForceHTTPSRedirectHeader");
       frameGuardHeaderCreatorSpy = jest.spyOn(rules, "createFrameGuardHeader");
       noopenHeaderCreatorSpy = jest.spyOn(rules, "createNoopenHeader");
       nosniffHeaderCreatorSpy = jest.spyOn(rules, "createNosniffHeader");
-      referrerGuardHeaderCreatorSpy = jest.spyOn(rules, "createReferrerGuardHeader");
+      referrerPolicyHeaderCreatorSpy = jest.spyOn(rules, "createReferrerPolicyHeader");
       xssProtectionHeaderCreatorSpy = jest.spyOn(rules, "createXSSProtectionHeader");
     });
 
     it("should call each rules and give proper options", () => {
       const dummyOptions: Parameters<typeof createHeadersObject>[0] = {
+        contentSecurityPolicy: { directives: { scriptSrc: "'self'" } },
         expectCT: [true, { maxAge: 123, enforce: true, reportURI: "https://example.example.com" }],
         forceHTTPSRedirect: [true, { maxAge: 123, preload: true }],
         frameGuard: ["allow-from", { uri: "https://example.example.com" }],
@@ -55,25 +61,13 @@ describe("createHeadersObject", () => {
       };
       createHeadersObject(dummyOptions);
 
-      expect(expectCTHeaderCreatorSpy).toBeCalledTimes(1);
+      expect(contentSecurityPolicyHeaderCreatorSpy).toBeCalledWith(dummyOptions.contentSecurityPolicy);
       expect(expectCTHeaderCreatorSpy).toBeCalledWith(dummyOptions.expectCT);
-
-      expect(forceHTTPSRedirectHeaderCreatorSpy).toBeCalledTimes(1);
       expect(forceHTTPSRedirectHeaderCreatorSpy).toBeCalledWith(dummyOptions.forceHTTPSRedirect);
-
-      expect(frameGuardHeaderCreatorSpy).toBeCalledTimes(1);
       expect(frameGuardHeaderCreatorSpy).toBeCalledWith(dummyOptions.frameGuard);
-
-      expect(noopenHeaderCreatorSpy).toBeCalledTimes(1);
       expect(noopenHeaderCreatorSpy).toBeCalledWith(dummyOptions.noopen);
-
-      expect(nosniffHeaderCreatorSpy).toBeCalledTimes(1);
       expect(nosniffHeaderCreatorSpy).toBeCalledWith(dummyOptions.nosniff);
-
-      expect(referrerGuardHeaderCreatorSpy).toBeCalledTimes(1);
-      expect(referrerGuardHeaderCreatorSpy).toBeCalledWith(dummyOptions.referrerGuard);
-
-      expect(xssProtectionHeaderCreatorSpy).toBeCalledTimes(1);
+      expect(referrerPolicyHeaderCreatorSpy).toBeCalledWith(dummyOptions.referrerPolicy);
       expect(xssProtectionHeaderCreatorSpy).toBeCalledWith(dummyOptions.xssProtection);
     });
   });

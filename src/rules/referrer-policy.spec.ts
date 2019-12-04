@@ -1,28 +1,37 @@
-import { createReferrerGuardHeader, createReferrerPolicyHeaderValue } from "./referrer-guard";
+import { createReferrerPolicyHeader, createReferrerPolicyHeaderValue } from "./referrer-policy";
 
-describe("headerValueCreator", () => {
-  let headerValueCreatorSpy: jest.Mock<
-    ReturnType<typeof createReferrerPolicyHeaderValue>,
-    Parameters<typeof createReferrerPolicyHeaderValue>
-  >;
-  beforeAll(() => {
-    headerValueCreatorSpy = jest.fn(createReferrerPolicyHeaderValue);
+describe("createReferrerPolicyHeader", () => {
+  context("when giving undefined", () => {
+    it("should return undefined", () => {
+      expect(createReferrerPolicyHeader()).toBeUndefined();
+    });
   });
 
-  it('should return "Referrer-Policy" as object\'s "name" property', () => {
-    expect(createReferrerGuardHeader(undefined, headerValueCreatorSpy)).toHaveProperty("name", "Referrer-Policy");
-  });
+  context("when giving not undefined", () => {
+    let headerValueCreatorMock: jest.Mock<
+      ReturnType<typeof createReferrerPolicyHeaderValue>,
+      Parameters<typeof createReferrerPolicyHeaderValue>
+    >;
+    beforeAll(() => {
+      headerValueCreatorMock = jest.fn(createReferrerPolicyHeaderValue);
+    });
 
-  it('should call the second argument function and return a value from the function as object\'s "value" property', () => {
-    const dummyValue = "dummy-value";
-    headerValueCreatorSpy.mockReturnValue(dummyValue);
+    it('should return "Referrer-Policy" as object\'s "name" property', () => {
+      expect(createReferrerPolicyHeader("no-referrer", headerValueCreatorMock)).toHaveProperty("name", "Referrer-Policy");
+    });
 
-    expect(createReferrerGuardHeader(undefined, headerValueCreatorSpy)).toHaveProperty("value", dummyValue);
-    expect(headerValueCreatorSpy).toBeCalledTimes(1);
+    it('should call the second argument function and return a value from the function as object\'s "value" property', () => {
+      const dummyOption: Parameters<typeof createReferrerPolicyHeader>[0] = "no-referrer";
+      const dummyValue = "dummy-value";
+      headerValueCreatorMock.mockReturnValue(dummyValue);
+
+      expect(createReferrerPolicyHeader(dummyOption, headerValueCreatorMock)).toHaveProperty("value", dummyValue);
+      expect(headerValueCreatorMock).toBeCalledWith(dummyOption);
+    });
   });
 });
 
-describe("createSurrogateControlHeaderValue", () => {
+describe("createReferrerPolicyHeaderValue", () => {
   context("when giving undefined", () => {
     it("should return undefined", () => {
       expect(createReferrerPolicyHeaderValue()).toBeUndefined();

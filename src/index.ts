@@ -5,6 +5,11 @@ import * as rules from "./rules";
 
 type Options = Partial<{
   /**
+   * This is to set "Content-Security-Policy" or "Content-Security-Policy-Report-Only" header and it's to prevent to load and
+   * execute non-allowed resources.
+   */
+  contentSecurityPolicy: rules.ContentSecurityPolicyOption;
+  /**
    * This is to set "Expect-CT" header and it's to tell browsers to expect Certificate Transparency.
    */
   expectCT: rules.ExpectCTOption;
@@ -35,7 +40,7 @@ type Options = Partial<{
    * This is to set "Referrer-Policy" header and it's to prevent to be got referrer by other servers.
    * You can specify one or more values for legacy browsers which does not support a specific value.
    */
-  referrerGuard: rules.ReferrerGuardOption;
+  referrerPolicy: rules.ReferrerPolicyOption;
   /**
    * This is to set "X-XSS-Protection" header and it's to prevent XSS attacks.
    * If you specify `"sanitize"` , this sets `"1"` to the header and browsers will sanitize unsafe area.
@@ -50,14 +55,16 @@ export const createHeadersObject = (options: Options = {}) => {
   const newHeaders: Record<string, string> = {};
 
   [
+    rules.createContentSecurityPolicyHeader(options.contentSecurityPolicy),
     rules.createExpectCTHeader(options.expectCT),
     rules.createForceHTTPSRedirectHeader(options.forceHTTPSRedirect),
     rules.createFrameGuardHeader(options.frameGuard),
     rules.createNoopenHeader(options.noopen),
     rules.createNosniffHeader(options.nosniff),
-    rules.createReferrerGuardHeader(options.referrerGuard),
+    rules.createReferrerPolicyHeader(options.referrerPolicy),
     rules.createXSSProtectionHeader(options.xssProtection),
   ].forEach((header) => {
+    if (header == undefined) return;
     if (header.value == undefined) return;
 
     newHeaders[header.name] = header.value;

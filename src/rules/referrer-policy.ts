@@ -1,4 +1,5 @@
 import { ResponseHeader } from "../shared";
+import { wrapArray } from "./shared";
 
 const supportedValues = [
   "no-referrer",
@@ -10,16 +11,15 @@ const supportedValues = [
   "strict-origin-when-cross-origin",
 ] as const;
 type SupportedValue = typeof supportedValues[number];
-export type ReferrerGuardOption = false | SupportedValue | SupportedValue[];
+export type ReferrerPolicyOption = false | SupportedValue | SupportedValue[];
 
 const headerName = "Referrer-Policy";
 
-export const createReferrerPolicyHeaderValue = (option?: ReferrerGuardOption): string | undefined => {
+export const createReferrerPolicyHeaderValue = (option?: ReferrerPolicyOption): string | undefined => {
   if (option == undefined) return;
   if (option === false) return;
 
-  const values = Array.isArray(option) ? option : [option];
-
+  const values = wrapArray(option);
   values.forEach((value) => {
     if ((value as string) === "unsafe-url") throw new Error(`Cannot specify a dangerous value for ${headerName}: ${value}`);
     if (!supportedValues.includes(value)) throw new Error(`Invalid value for ${headerName}: ${value}`);
@@ -28,10 +28,12 @@ export const createReferrerPolicyHeaderValue = (option?: ReferrerGuardOption): s
   return values.join(", ");
 };
 
-export const createReferrerGuardHeader = (
-  option?: ReferrerGuardOption,
+export const createReferrerPolicyHeader = (
+  option?: ReferrerPolicyOption,
   headerValueCreator = createReferrerPolicyHeaderValue,
-): ResponseHeader => {
+): ResponseHeader | undefined => {
+  if (option == undefined) return;
+
   const value = headerValueCreator(option);
 
   return { name: headerName, value };
