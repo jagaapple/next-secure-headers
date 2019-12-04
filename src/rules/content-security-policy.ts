@@ -60,7 +60,7 @@ const headerName = "Content-Security-Policy";
 const reportOnlyHeaderName = "Content-Security-Policy-Report-Only";
 const directiveValueSepartor = "; ";
 
-export const getProperHeaderName = (reportOnly: boolean = false) => (reportOnly ? reportOnlyHeaderName : headerName);
+export const getProperHeaderName = (reportOnly = false) => (reportOnly ? reportOnlyHeaderName : headerName);
 export const createDirectiveValue = <T>(directiveName: string, value: T | T[], arrayWrapper = wrapArray) => {
   const values = arrayWrapper(value);
 

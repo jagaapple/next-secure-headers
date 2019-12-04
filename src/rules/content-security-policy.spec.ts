@@ -1,12 +1,12 @@
 import { wrapArray } from "./shared";
 import {
-  createContentSecurityPolicyHeader,
+  convertDocumentDirectiveToString,
   convertFetchDirectiveToString,
+  convertReportingDirectiveToString,
+  createContentSecurityPolicyHeader,
   createContentSecurityPolicyOptionHeaderValue,
   createDirectiveValue,
-  convertDocumentDirectiveToString,
   getProperHeaderName,
-  convertReportingDirectiveToString,
 } from "./content-security-policy";
 
 describe("createContentSecurityPolicyHeader", () => {
