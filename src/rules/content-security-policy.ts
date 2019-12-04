@@ -144,7 +144,9 @@ export const createContentSecurityPolicyOptionHeaderValue = (
     fetchDirectiveToStringConverter(option.directives),
     documentDirectiveToStringConverter(option.directives),
     reportingDirectiveToStringConverter(option.directives),
-  ].join(directiveValueSepartor);
+  ]
+    .filter((string) => string.length > 0)
+    .join(directiveValueSepartor);
 };
 
 export const createContentSecurityPolicyHeader = (
