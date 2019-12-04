@@ -55,25 +55,12 @@ describe("createHeadersObject", () => {
       };
       createHeadersObject(dummyOptions);
 
-      expect(expectCTHeaderCreatorSpy).toBeCalledTimes(1);
       expect(expectCTHeaderCreatorSpy).toBeCalledWith(dummyOptions.expectCT);
-
-      expect(forceHTTPSRedirectHeaderCreatorSpy).toBeCalledTimes(1);
       expect(forceHTTPSRedirectHeaderCreatorSpy).toBeCalledWith(dummyOptions.forceHTTPSRedirect);
-
-      expect(frameGuardHeaderCreatorSpy).toBeCalledTimes(1);
       expect(frameGuardHeaderCreatorSpy).toBeCalledWith(dummyOptions.frameGuard);
-
-      expect(noopenHeaderCreatorSpy).toBeCalledTimes(1);
       expect(noopenHeaderCreatorSpy).toBeCalledWith(dummyOptions.noopen);
-
-      expect(nosniffHeaderCreatorSpy).toBeCalledTimes(1);
       expect(nosniffHeaderCreatorSpy).toBeCalledWith(dummyOptions.nosniff);
-
-      expect(referrerPolicyHeaderCreatorSpy).toBeCalledTimes(1);
       expect(referrerPolicyHeaderCreatorSpy).toBeCalledWith(dummyOptions.referrerPolicy);
-
-      expect(xssProtectionHeaderCreatorSpy).toBeCalledTimes(1);
       expect(xssProtectionHeaderCreatorSpy).toBeCalledWith(dummyOptions.xssProtection);
     });
   });

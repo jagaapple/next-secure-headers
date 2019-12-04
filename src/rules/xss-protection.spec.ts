@@ -2,24 +2,25 @@ import { encodeStrictURI } from "./shared";
 import { createXSSProtectionHeader, createXXSSProtectionHeaderValue } from "./xss-protection";
 
 describe("createXSSProtectionHeader", () => {
-  let headerValueCreatorSpy: jest.Mock<
+  let headerValueCreatorMock: jest.Mock<
     ReturnType<typeof createXXSSProtectionHeaderValue>,
     Parameters<typeof createXXSSProtectionHeaderValue>
   >;
   beforeAll(() => {
-    headerValueCreatorSpy = jest.fn(createXXSSProtectionHeaderValue);
+    headerValueCreatorMock = jest.fn(createXXSSProtectionHeaderValue);
   });
 
   it('should return "X-XSS-Protection" as object\'s "name" property', () => {
-    expect(createXSSProtectionHeader(undefined, headerValueCreatorSpy)).toHaveProperty("name", "X-XSS-Protection");
+    expect(createXSSProtectionHeader(undefined, headerValueCreatorMock)).toHaveProperty("name", "X-XSS-Protection");
   });
 
   it('should call the second argument function and return a value from the function as object\'s "value" property', () => {
+    const dummyOption: Parameters<typeof createXSSProtectionHeader>[0] = undefined;
     const dummyValue = "dummy-value";
-    headerValueCreatorSpy.mockReturnValue(dummyValue);
+    headerValueCreatorMock.mockReturnValue(dummyValue);
 
-    expect(createXSSProtectionHeader(undefined, headerValueCreatorSpy)).toHaveProperty("value", dummyValue);
-    expect(headerValueCreatorSpy).toBeCalledTimes(1);
+    expect(createXSSProtectionHeader(dummyOption, headerValueCreatorMock)).toHaveProperty("value", dummyValue);
+    expect(headerValueCreatorMock).toBeCalledWith(dummyOption);
   });
 });
 
@@ -50,17 +51,16 @@ describe("createXXSSProtectionHeaderValue", () => {
   });
 
   context('when giving "report" as array', () => {
-    let strictURIEncoderSpy: jest.Mock<ReturnType<typeof encodeStrictURI>, Parameters<typeof encodeStrictURI>>;
+    let strictURIEncoderMock: jest.Mock<ReturnType<typeof encodeStrictURI>, Parameters<typeof encodeStrictURI>>;
     beforeAll(() => {
-      strictURIEncoderSpy = jest.fn(encodeStrictURI);
+      strictURIEncoderMock = jest.fn(encodeStrictURI);
     });
 
-    it('should call "encodeStrictURI"', () => {
+    it("should call the second argument", () => {
       const uri = "https://example.com/";
-      createXXSSProtectionHeaderValue(["report", { uri }], strictURIEncoderSpy);
+      createXXSSProtectionHeaderValue(["report", { uri }], strictURIEncoderMock);
 
-      expect(strictURIEncoderSpy).toBeCalledTimes(1);
-      expect(strictURIEncoderSpy).toBeCalledWith(uri);
+      expect(strictURIEncoderMock).toBeCalledWith(uri);
     });
 
     it('should return "1; report=" and the URI', () => {

@@ -2,24 +2,25 @@ import { encodeStrictURI } from "./shared";
 import { createExpectCTHeader, createExpectCTHeaderValue } from "./expect-ct";
 
 describe("createExpectCTHeader", () => {
-  let headerValueCreatorSpy: jest.Mock<
+  let headerValueCreatorMock: jest.Mock<
     ReturnType<typeof createExpectCTHeaderValue>,
     Parameters<typeof createExpectCTHeaderValue>
   >;
   beforeAll(() => {
-    headerValueCreatorSpy = jest.fn(createExpectCTHeaderValue);
+    headerValueCreatorMock = jest.fn(createExpectCTHeaderValue);
   });
 
   it('should return "Expect-CT" as object\'s "name" property', () => {
-    expect(createExpectCTHeader(undefined, headerValueCreatorSpy)).toHaveProperty("name", "Expect-CT");
+    expect(createExpectCTHeader(undefined, headerValueCreatorMock)).toHaveProperty("name", "Expect-CT");
   });
 
   it('should call the second argument function and return a value from the function as object\'s "value" property', () => {
+    const dummyOption: Parameters<typeof createExpectCTHeader>[0] = undefined;
     const dummyValue = "dummy-value";
-    headerValueCreatorSpy.mockReturnValue(dummyValue);
+    headerValueCreatorMock.mockReturnValue(dummyValue);
 
-    expect(createExpectCTHeader(undefined, headerValueCreatorSpy)).toHaveProperty("value", dummyValue);
-    expect(headerValueCreatorSpy).toBeCalledTimes(1);
+    expect(createExpectCTHeader(dummyOption, headerValueCreatorMock)).toHaveProperty("value", dummyValue);
+    expect(headerValueCreatorMock).toBeCalledWith(dummyOption);
   });
 });
 
@@ -90,17 +91,16 @@ describe("createExpectCTHeaderValue", () => {
   });
 
   context('when specifying "reportURI" option', () => {
-    let strictURIEncoderSpy: jest.Mock<ReturnType<typeof encodeStrictURI>, Parameters<typeof encodeStrictURI>>;
+    let strictURIEncoderMock: jest.Mock<ReturnType<typeof encodeStrictURI>, Parameters<typeof encodeStrictURI>>;
     beforeAll(() => {
-      strictURIEncoderSpy = jest.fn(encodeStrictURI);
+      strictURIEncoderMock = jest.fn(encodeStrictURI);
     });
 
-    it('should call "encodeStrictURI"', () => {
+    it("should call the second argument", () => {
       const uri = "https://example.com/";
-      createExpectCTHeaderValue([true, { reportURI: uri }], strictURIEncoderSpy);
+      createExpectCTHeaderValue([true, { reportURI: uri }], strictURIEncoderMock);
 
-      expect(strictURIEncoderSpy).toBeCalledTimes(1);
-      expect(strictURIEncoderSpy).toBeCalledWith(uri);
+      expect(strictURIEncoderMock).toBeCalledWith(uri);
     });
 
     it('should return "max-age" and the URI"', () => {

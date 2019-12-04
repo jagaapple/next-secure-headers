@@ -2,24 +2,25 @@ import { encodeStrictURI } from "./shared";
 import { createFrameGuardHeader, createXFrameOptionsHeaderValue } from "./frame-guard";
 
 describe("createFrameGuardHeader", () => {
-  let headerValueCreatorSpy: jest.Mock<
+  let headerValueCreatorMock: jest.Mock<
     ReturnType<typeof createXFrameOptionsHeaderValue>,
     Parameters<typeof createXFrameOptionsHeaderValue>
   >;
   beforeAll(() => {
-    headerValueCreatorSpy = jest.fn(createXFrameOptionsHeaderValue);
+    headerValueCreatorMock = jest.fn(createXFrameOptionsHeaderValue);
   });
 
   it('should return "X-Frame-Options" as object\'s "name" property', () => {
-    expect(createFrameGuardHeader(undefined, headerValueCreatorSpy)).toHaveProperty("name", "X-Frame-Options");
+    expect(createFrameGuardHeader(undefined, headerValueCreatorMock)).toHaveProperty("name", "X-Frame-Options");
   });
 
   it('should call the second argument function and return a value from the function as object\'s "value" property', () => {
+    const dummyOption: Parameters<typeof createFrameGuardHeader>[0] = undefined;
     const dummyValue = "dummy-value";
-    headerValueCreatorSpy.mockReturnValue(dummyValue);
+    headerValueCreatorMock.mockReturnValue(dummyValue);
 
-    expect(createFrameGuardHeader(undefined, headerValueCreatorSpy)).toHaveProperty("value", dummyValue);
-    expect(headerValueCreatorSpy).toBeCalledTimes(1);
+    expect(createFrameGuardHeader(dummyOption, headerValueCreatorMock)).toHaveProperty("value", dummyValue);
+    expect(headerValueCreatorMock).toBeCalledWith(dummyOption);
   });
 });
 
@@ -50,17 +51,16 @@ describe("createXFrameOptionsHeaderValue", () => {
   });
 
   context('when giving "allow-from" as array', () => {
-    let strictURIEncoderSpy: jest.Mock<ReturnType<typeof encodeStrictURI>, Parameters<typeof encodeStrictURI>>;
+    let strictURIEncoderMock: jest.Mock<ReturnType<typeof encodeStrictURI>, Parameters<typeof encodeStrictURI>>;
     beforeAll(() => {
-      strictURIEncoderSpy = jest.fn(encodeStrictURI);
+      strictURIEncoderMock = jest.fn(encodeStrictURI);
     });
 
     it('should call "encodeStrictURI"', () => {
       const uri = "https://example.com/";
-      createXFrameOptionsHeaderValue(["allow-from", { uri }], strictURIEncoderSpy);
+      createXFrameOptionsHeaderValue(["allow-from", { uri }], strictURIEncoderMock);
 
-      expect(strictURIEncoderSpy).toBeCalledTimes(1);
-      expect(strictURIEncoderSpy).toBeCalledWith(uri);
+      expect(strictURIEncoderMock).toBeCalledWith(uri);
     });
 
     it('should return "allow-from" and the URI', () => {
