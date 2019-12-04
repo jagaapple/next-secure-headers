@@ -7,6 +7,8 @@ type Options = Partial<{
   /**
    * This is to set "Content-Security-Policy" or "Content-Security-Policy-Report-Only" header and it's to prevent to load and
    * execute non-allowed resources.
+   * If you give true to `reportOnly` , this sets "Content-Security-Policy-Report-Only" to value instead of
+   * "Content-Security-Policy".
    */
   contentSecurityPolicy: rules.ContentSecurityPolicyOption;
   /**
@@ -16,13 +18,13 @@ type Options = Partial<{
   /**
    * This is to set "Strict-Transport-Security (HSTS)" header and it's to prevent man-in-the-middle attacks during redirects from HTTP to HTTPS.
    * To enable this is highly recommended if you use HTTPS (SSL) on your servers.
-   * By default, this is set two years (63,072,000 seconds) as `max-age` .
+   * By default, this sets `max-age` to two years (63,072,000 seconds).
    * @default [true, { maxAge: 63072000 }]
    */
   forceHTTPSRedirect: rules.ForceHTTPSRedirectOption;
   /**
    * This is to set "X-Frame-Options" header and it's to prevent clickjacking attacks.
-   * `"deny"` is highly recommendeed if you doesn't use frame elements such as `iframe` .
+   * `"deny"` is highly recommended if you doesn't use frame elements such as `iframe` .
    * @default "deny"
    */
   frameGuard: rules.FrameGuardOption;
@@ -43,9 +45,9 @@ type Options = Partial<{
   referrerPolicy: rules.ReferrerPolicyOption;
   /**
    * This is to set "X-XSS-Protection" header and it's to prevent XSS attacks.
-   * If you specify `"sanitize"` , this sets `"1"` to the header and browsers will sanitize unsafe area.
-   * If you specify `"block-rendering"` , this sets `"1; mode=block"` to the header and browsers will block rendering a page.
-   * "X-XSS-Protection" blocks many XSS attacks, but Contents Security Policy is recommended to use comapred to this.
+   * If you specify `"sanitize"` , this sets the header to `"1"` and browsers will sanitize unsafe area.
+   * If you specify `"block-rendering"` , this sets the header to `"1; mode=block"` and browsers will block rendering a page.
+   * "X-XSS-Protection" blocks many XSS attacks, but Content Security Policy is recommended to use compared to this.
    * @default "sanitize"
    */
   xssProtection: rules.XSSProtectionOption;
