@@ -1,3 +1,4 @@
+export { ContentSecurityPolicyOption, createContentSecurityPolicyHeader } from "./content-security-policy";
 export { ExpectCTOption, createExpectCTHeader } from "./expect-ct";
 export { ForceHTTPSRedirectOption, createForceHTTPSRedirectHeader } from "./force-https-redirect";
 export { FrameGuardOption, createFrameGuardHeader } from "./frame-guard";

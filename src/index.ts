@@ -5,6 +5,11 @@ import * as rules from "./rules";
 
 type Options = Partial<{
   /**
+   * This is to set "Content-Security-Policy" or "Content-Security-Policy-Report-Only" header and it's to prevent to load and
+   * execute non-allowed resources.
+   */
+  contentSecurityPolicy: rules.ContentSecurityPolicyOption;
+  /**
    * This is to set "Expect-CT" header and it's to tell browsers to expect Certificate Transparency.
    */
   expectCT: rules.ExpectCTOption;
@@ -50,6 +55,7 @@ export const createHeadersObject = (options: Options = {}) => {
   const newHeaders: Record<string, string> = {};
 
   [
+    rules.createContentSecurityPolicyHeader(options.contentSecurityPolicy),
     rules.createExpectCTHeader(options.expectCT),
     rules.createForceHTTPSRedirectHeader(options.forceHTTPSRedirect),
     rules.createFrameGuardHeader(options.frameGuard),
