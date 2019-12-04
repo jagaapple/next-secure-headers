@@ -113,7 +113,7 @@ describe("createContentSecurityPolicyOptionHeaderValue", () => {
 
     it('should join directive strings using "; "', () => {
       fetchDirectiveToStringConverterMock.mockReturnValue("dummy-value-1");
-      documentDirectiveToStringConverterMock.mockReturnValue("dummy-value-2");
+      documentDirectiveToStringConverterMock.mockReturnValue("");
       reportingDirectiveToStringConverterMock.mockReturnValue("dummy-value-3");
 
       expect(
@@ -123,7 +123,7 @@ describe("createContentSecurityPolicyOptionHeaderValue", () => {
           documentDirectiveToStringConverterMock,
           reportingDirectiveToStringConverterMock,
         ),
-      ).toBe("dummy-value-1; dummy-value-2; dummy-value-3");
+      ).toBe("dummy-value-1; dummy-value-3");
     });
   });
 });
