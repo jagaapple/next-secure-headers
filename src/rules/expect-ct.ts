@@ -35,7 +35,10 @@ export const createExpectCTHeaderValue = (option?: ExpectCTOption, strictURIEnco
 export const createExpectCTHeader = (
   option?: ExpectCTOption,
   headerValueCreator = createExpectCTHeaderValue,
-): ResponseHeader => {
+): ResponseHeader | undefined => {
+  if (option == undefined) return;
+  if (option === false) return;
+
   const value = headerValueCreator(option);
 
   return { name: headerName, value };

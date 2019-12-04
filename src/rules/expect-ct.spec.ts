@@ -2,25 +2,40 @@ import { encodeStrictURI } from "./shared";
 import { createExpectCTHeader, createExpectCTHeaderValue } from "./expect-ct";
 
 describe("createExpectCTHeader", () => {
-  let headerValueCreatorMock: jest.Mock<
-    ReturnType<typeof createExpectCTHeaderValue>,
-    Parameters<typeof createExpectCTHeaderValue>
-  >;
-  beforeAll(() => {
-    headerValueCreatorMock = jest.fn(createExpectCTHeaderValue);
+  context("when giving undefined", () => {
+    it("should return undefined", () => {
+      expect(createExpectCTHeader()).toBeUndefined();
+    });
   });
 
-  it('should return "Expect-CT" as object\'s "name" property', () => {
-    expect(createExpectCTHeader(undefined, headerValueCreatorMock)).toHaveProperty("name", "Expect-CT");
+  context("when giving false", () => {
+    it("should return undefined", () => {
+      expect(createExpectCTHeader(false)).toBeUndefined();
+    });
   });
 
-  it('should call the second argument function and return a value from the function as object\'s "value" property', () => {
-    const dummyOption: Parameters<typeof createExpectCTHeader>[0] = undefined;
-    const dummyValue = "dummy-value";
-    headerValueCreatorMock.mockReturnValue(dummyValue);
+  context("when giving an object", () => {
+    const dummyOption: Parameters<typeof createExpectCTHeader>[0] = [true, { maxAge: 123 }];
 
-    expect(createExpectCTHeader(dummyOption, headerValueCreatorMock)).toHaveProperty("value", dummyValue);
-    expect(headerValueCreatorMock).toBeCalledWith(dummyOption);
+    let headerValueCreatorMock: jest.Mock<
+      ReturnType<typeof createExpectCTHeaderValue>,
+      Parameters<typeof createExpectCTHeaderValue>
+    >;
+    beforeAll(() => {
+      headerValueCreatorMock = jest.fn(createExpectCTHeaderValue);
+    });
+
+    it('should return "Expect-CT" as object\'s "name" property', () => {
+      expect(createExpectCTHeader(dummyOption, headerValueCreatorMock)).toHaveProperty("name", "Expect-CT");
+    });
+
+    it('should call the second argument function and return a value from the function as object\'s "value" property', () => {
+      const dummyValue = "dummy-value";
+      headerValueCreatorMock.mockReturnValue(dummyValue);
+
+      expect(createExpectCTHeader(dummyOption, headerValueCreatorMock)).toHaveProperty("value", dummyValue);
+      expect(headerValueCreatorMock).toBeCalledWith(dummyOption);
+    });
   });
 });
 

@@ -33,6 +33,7 @@ export const createReferrerPolicyHeader = (
   headerValueCreator = createReferrerPolicyHeaderValue,
 ): ResponseHeader | undefined => {
   if (option == undefined) return;
+  if (option === false) return;
 
   const value = headerValueCreator(option);
 
