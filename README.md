@@ -186,7 +186,7 @@ this sets `max-age` to two years (63,072,000 seconds).
 |---|---
 | `"deny"` | https://developer.mozilla.org/docs/Web/HTTP/Headers/X-Frame-Options
 
-This is to set "X-Frame-Options" header and it's to prevent clickjacking attacks. `"deny"` is highly recommended if you doesn't
+This is to set "X-Frame-Options" header and it's to prevent clickjacking attacks. `"deny"` is highly recommended if you don't
 use frame elements such as `iframe` .
 
 ### `noopen`

@@ -24,7 +24,7 @@ type Options = Partial<{
   forceHTTPSRedirect: rules.ForceHTTPSRedirectOption;
   /**
    * This is to set "X-Frame-Options" header and it's to prevent clickjacking attacks.
-   * `"deny"` is highly recommended if you doesn't use frame elements such as `iframe` .
+   * `"deny"` is highly recommended if you don't use frame elements such as `iframe` .
    * @default "deny"
    */
   frameGuard: rules.FrameGuardOption;
