@@ -65,5 +65,5 @@
   },
   "engineStrict": false,
   "preferGlobal": false,
-  "private": true
+  "private": false
 }
