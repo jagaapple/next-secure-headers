@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import * as rules from "./rules";
-import { default as withSecureHeaders, createHeadersObject } from "./index";
+import { createHeadersObject, default as withSecureHeaders } from "./index";
 
 describe("createHeadersObject", () => {
   let contentSecurityPolicyHeaderCreatorSpy: jest.SpyInstance<
@@ -185,6 +185,29 @@ describe("withSecureHeaders", () => {
         const ComponentWithSecureHeaders = withSecureHeaders()(DummyComponent);
 
         const dummyContext: any = { ctx: { res: { setHeader: jest.fn() } } };
+        await expect(ComponentWithSecureHeaders.getInitialProps!(dummyContext)).resolves.toEqual(dummyInitialProps);
+      });
+    });
+
+    context('when "headersSent" property of "res" is true', () => {
+      it('should not call "context.ctx.res.setHeader()"', async () => {
+        const DummyComponent = () => React.createElement("div");
+        const ComponentWithSecureHeaders = withSecureHeaders()(DummyComponent);
+
+        const resSetHeeaderSpy = jest.fn();
+        const dummyContext: any = { ctx: { res: { setHeader: resSetHeeaderSpy, headersSent: true } } };
+        await ComponentWithSecureHeaders.getInitialProps!(dummyContext);
+
+        expect(resSetHeeaderSpy).not.toBeCalled();
+      });
+
+      it('should return the returned value from "getInitialProps"', async () => {
+        const DummyComponent = () => React.createElement("div");
+        const dummyInitialProps = { dummy: "dummy" };
+        DummyComponent.getInitialProps = async () => dummyInitialProps;
+        const ComponentWithSecureHeaders = withSecureHeaders()(DummyComponent);
+
+        const dummyContext: any = { ctx: { res: { setHeader: jest.fn(), headersSent: true } } };
         await expect(ComponentWithSecureHeaders.getInitialProps!(dummyContext)).resolves.toEqual(dummyInitialProps);
       });
     });
