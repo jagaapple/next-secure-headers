@@ -90,6 +90,7 @@ export default (options: Options = {}) => (ChildComponent: NextComponent) => {
     const initialProps = (await ChildComponent.getInitialProps?.(context)) ?? {};
     const res = context.res ?? context.ctx?.res;
     if (res == undefined) return initialProps;
+    if (res.headersSent) return initialProps;
 
     const headers = createHeadersObject(options);
     Object.entries(headers).forEach(([name, value]) => res.setHeader(name, value));
