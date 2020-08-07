@@ -17,7 +17,7 @@ export default withSecureHeaders({
 
 <div align="center">
 <a href="https://www.npmjs.com/package/next-secure-headers"><img src="https://img.shields.io/npm/v/next-secure-headers.svg" alt="npm"></a>
-<a href="https://circleci.com/gh/jagaapple/next-secure-headers"><img src="https://img.shields.io/circleci/project/github/jagaapple/next-secure-headers/master.svg" alt="CircleCI"></a>
+<a href="https://github.com/jagaapple/next-secure-headers/actions"><img src="https://github.com/jagaapple/next-secure-headers/workflows/Build%20and%20test/badge.svg" alt="GitHub Actions"></a>
 <a href="https://codecov.io/gh/jagaapple/next-secure-headers"><img src="https://img.shields.io/codecov/c/github/jagaapple/next-secure-headers.svg"></a>
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/github/license/jagaapple/next-secure-headers.svg" alt="license"></a>
 <a href="https://twitter.com/jagaapple_tech"><img src="https://img.shields.io/badge/contact-%40jagaapple_tech-blue.svg" alt="@jagaapple_tech"></a>
@@ -92,21 +92,21 @@ Next.js such as [next-redux-wrapper](https://github.com/kirill-konshin/next-redu
 The following are rules next-secure-headers has and Helmet has. next-secure-headers is inspired by Helmet, but it don't have
 some rules for some reason.
 
-| | next-secure-headers | Helmet | Comment
-|---|---|---|---
-| Strict-Transport-Security | `forceHTTPSRedirect` | `hsts` |
-| X-Frame-Options | `frameGuard` | `frameguard` |
-| X-Download-Options | `noopen` | `ieNoOpen` |
-| X-Content-Type-Options | `nosniff` | `noSniff` |
-| X-XSS-Protection | `xssProtection` | `xssFilter` |
-| Content-Security-Policy | `contentSecurityPolicy` | `contentSecurityPolicy` |
-| Expect-CT | `expectCT` | `expectCt` |
-| Referrer-Policy | `referrerPolicy` | `referrerPolicy` |
-| X-DNS-Prefetch-Control | - | `dnsPrefetchControl` | This has privacy implications but this improves performance.
-| Feature-Policy | - | `featurePolicy` | Feature Policy improves security but it is working draft yet.
-| X-Powered-By | - | `hidePoweredBy` | [Next.js supports to remove this header in `next.config.js`](#how-to-remove-x-powered-by-header).
-| Related to cache | - | `nocache` | As Helmet said, caching has lots of benefits.
-| X-Permitted-Cross-Domain-Policies | - | `crossdomain` | Adobe Flash is one of old web technologies.
+|                                   | next-secure-headers     | Helmet                  | Comment                                                                                           |
+|-----------------------------------|-------------------------|-------------------------|---------------------------------------------------------------------------------------------------|
+| Strict-Transport-Security         | `forceHTTPSRedirect`    | `hsts`                  |                                                                                                   |
+| X-Frame-Options                   | `frameGuard`            | `frameguard`            |                                                                                                   |
+| X-Download-Options                | `noopen`                | `ieNoOpen`              |                                                                                                   |
+| X-Content-Type-Options            | `nosniff`               | `noSniff`               |                                                                                                   |
+| X-XSS-Protection                  | `xssProtection`         | `xssFilter`             |                                                                                                   |
+| Content-Security-Policy           | `contentSecurityPolicy` | `contentSecurityPolicy` |                                                                                                   |
+| Expect-CT                         | `expectCT`              | `expectCt`              |                                                                                                   |
+| Referrer-Policy                   | `referrerPolicy`        | `referrerPolicy`        |                                                                                                   |
+| X-DNS-Prefetch-Control            | -                       | `dnsPrefetchControl`    | This has privacy implications but this improves performance.                                      |
+| Feature-Policy                    | -                       | `featurePolicy`         | Feature Policy improves security but it is working draft yet.                                     |
+| X-Powered-By                      | -                       | `hidePoweredBy`         | [Next.js supports to remove this header in `next.config.js`](#how-to-remove-x-powered-by-header). |
+| Related to cache                  | -                       | `nocache`               | As Helmet said, caching has lots of benefits.                                                     |
+| X-Permitted-Cross-Domain-Policies | -                       | `crossdomain`           | Adobe Flash is one of old web technologies.                                                       |
 
 
 ## Quick Start
@@ -166,9 +166,9 @@ export default withSecureHeaders({
 }
 ```
 
-| Default Value | MDN
-|---|---
-| `[true, { maxAge: 63072000 }]` | https://developer.mozilla.org/docs/Web/HTTP/Headers/Strict-Transport-Security
+| Default Value                  | MDN                                                                           |
+|--------------------------------|-------------------------------------------------------------------------------|
+| `[true, { maxAge: 63072000 }]` | https://developer.mozilla.org/docs/Web/HTTP/Headers/Strict-Transport-Security |
 
 This is to set "Strict-Transport-Security (HSTS)" header and it's to prevent man-in-the-middle attacks during redirects from
 HTTP to HTTPS. To enable this is highly recommended if you use HTTPS (SSL) on your servers.
@@ -183,9 +183,9 @@ this sets `max-age` to two years (63,072,000 seconds).
 }
 ```
 
-| Default Value | MDN
-|---|---
-| `"deny"` | https://developer.mozilla.org/docs/Web/HTTP/Headers/X-Frame-Options
+| Default Value | MDN                                                                 |
+|---------------|---------------------------------------------------------------------|
+| `"deny"`      | https://developer.mozilla.org/docs/Web/HTTP/Headers/X-Frame-Options |
 
 This is to set "X-Frame-Options" header and it's to prevent clickjacking attacks. `"deny"` is highly recommended if you don't
 use frame elements such as `iframe` .
@@ -197,9 +197,9 @@ use frame elements such as `iframe` .
 }
 ```
 
-| Default Value | MDN
-|---|---
-| `"noopen"` | https://developer.mozilla.org/docs/Web/HTTP/Headers/X-Download-Options
+| Default Value | MDN                                                                    |
+|---------------|------------------------------------------------------------------------|
+| `"noopen"`    | https://developer.mozilla.org/docs/Web/HTTP/Headers/X-Download-Options |
 
 This is to set "X-Download-Options" header and it's to prevent to open downloaded files automatically for IE8+ (MIME Handling
 attacks).
@@ -211,9 +211,9 @@ attacks).
 }
 ```
 
-| Default Value | MDN
-|---|---
-| `"nosniff"` | https://developer.mozilla.org/docs/Web/HTTP/Headers/X-Content-Type-Options
+| Default Value | MDN                                                                        |
+|---------------|----------------------------------------------------------------------------|
+| `"nosniff"`   | https://developer.mozilla.org/docs/Web/HTTP/Headers/X-Content-Type-Options |
 
 This is to set "X-Content-Type-Options" header and it's to prevent MIME Sniffing attacks.
 
@@ -224,9 +224,9 @@ This is to set "X-Content-Type-Options" header and it's to prevent MIME Sniffing
 }
 ```
 
-| Default Value | MDN
-|---|---
-| `"sanitize"` | https://developer.mozilla.org/docs/Web/HTTP/Headers/X-XSS-Protection
+| Default Value | MDN                                                                  |
+|---------------|----------------------------------------------------------------------|
+| `"sanitize"`  | https://developer.mozilla.org/docs/Web/HTTP/Headers/X-XSS-Protection |
 
 This is to set "X-XSS-Protection" header and it's to prevent XSS attacks.
 
@@ -289,9 +289,9 @@ blocks many XSS attacks, but Content Security Policy is recommended to use compa
 }
 ```
 
-| Default Value | MDN
-|---|---
-| `false` | https://developer.mozilla.org/docs/Web/HTTP/Headers/Content-Security-Policy
+| Default Value | MDN                                                                         |
+|---------------|-----------------------------------------------------------------------------|
+| `false`       | https://developer.mozilla.org/docs/Web/HTTP/Headers/Content-Security-Policy |
 
 This is to set "Content-Security-Policy" or "Content-Security-Policy-Report-Only" header and it's to prevent to load and execute
 non-allowed resources.
@@ -305,9 +305,9 @@ If you give true to `reportOnly` , this sets "Content-Security-Policy-Report-Onl
 }
 ```
 
-| Default Value | MDN
-|---|---
-| `false` | https://developer.mozilla.org/docs/Web/HTTP/Headers/Expect-CT
+| Default Value | MDN                                                           |
+|---------------|---------------------------------------------------------------|
+| `false`       | https://developer.mozilla.org/docs/Web/HTTP/Headers/Expect-CT |
 
 This is to set "Expect-CT" header and it's to tell browsers to expect Certificate Transparency.
 
@@ -321,9 +321,9 @@ This is to set "Expect-CT" header and it's to tell browsers to expect Certificat
 }
 ```
 
-| Default Value | MDN
-|---|---
-| `false` | https://developer.mozilla.org/docs/Web/HTTP/Headers/Referrer-Policy
+| Default Value | MDN                                                                 |
+|---------------|---------------------------------------------------------------------|
+| `false`       | https://developer.mozilla.org/docs/Web/HTTP/Headers/Referrer-Policy |
 
 This is to set "Referrer-Policy" header and it's to prevent to be got referrer by other servers. You can specify one or more
 values for legacy browsers which does not support a specific value.
@@ -430,4 +430,4 @@ Please read [Contributing Guidelines](./.github/CONTRIBUTING.md) before developm
 ## License
 The library is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
 
-Copyright 2019 Jaga Apple. All rights reserve
+Copyright 2020 Jaga Apple. All rights reserved.
