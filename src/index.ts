@@ -91,7 +91,7 @@ type NextComponent<P = any, IP = {}> = React.ComponentType<P> & {
   getInitialProps?(context: NextPageContext & NextAppContext): IP | Promise<IP>;
 };
 
-export default (options: Options = {}) => (ChildComponent: NextComponent) => {
+export const withSecureHeaders = (options: Options = {}) => (ChildComponent: NextComponent) => {
   const Component: NextComponent = (props: any) => React.createElement(ChildComponent, props);
 
   Component.getInitialProps = async (context) => {

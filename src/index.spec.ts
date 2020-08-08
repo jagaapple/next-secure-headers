@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { rules } from "./rules";
-import { createHeadersObject, default as withSecureHeaders } from "./index";
+import { createHeadersObject, withSecureHeaders } from "./index";
 
 describe("createHeadersObject", () => {
   let contentSecurityPolicyHeaderCreatorSpy: jest.SpyInstance<
