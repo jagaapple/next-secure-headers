@@ -1,5 +1,5 @@
 {
-  "name": "next-secure-headers-example",
+  "name": "next-secure-headers-example-hoc",
   "version": "1.0.0",
   "scripts": {
     "dev": "next dev",
