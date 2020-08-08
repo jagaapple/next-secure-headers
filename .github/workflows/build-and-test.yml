@@ -56,10 +56,15 @@ jobs:
         with:
           path: "./node_modules"
           key: "node-modules-${{ needs.parameters.outputs.GITHUB_SHA }}-${{ matrix.node }}"
-      - name: "Execute tests"
-        run: "npm test"
       - name: "Build test"
         run: "npm run build"
+      - name: "Execute tests"
+        run: "npm test"
+      - name: "Calculate coverage rate"
+        if: "matrix.node == '12.13'"
+        env:
+          CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
+        run: "npm run coverage"
 
   lint:
     name: "Lint"
