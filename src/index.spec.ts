@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import * as rules from "./rules";
+import { rules } from "./rules";
 import { createHeadersObject, default as withSecureHeaders } from "./index";
 
 describe("createHeadersObject", () => {
