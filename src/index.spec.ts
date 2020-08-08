@@ -38,7 +38,7 @@ describe("createHeadersObject", () => {
   >;
 
   describe("calling rules", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       contentSecurityPolicyHeaderCreatorSpy = jest.spyOn(rules, "createContentSecurityPolicyHeader");
       expectCTHeaderCreatorSpy = jest.spyOn(rules, "createExpectCTHeader");
       forceHTTPSRedirectHeaderCreatorSpy = jest.spyOn(rules, "createForceHTTPSRedirectHeader");
@@ -73,7 +73,7 @@ describe("createHeadersObject", () => {
   });
 
   describe("filtering", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       forceHTTPSRedirectHeaderCreatorSpy = jest.spyOn(rules, "createForceHTTPSRedirectHeader");
       forceHTTPSRedirectHeaderCreatorSpy.mockReturnValue({ name: "dummy-1", value: undefined });
 

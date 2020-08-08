@@ -6,7 +6,7 @@ describe("createXSSProtectionHeader", () => {
     ReturnType<typeof createXXSSProtectionHeaderValue>,
     Parameters<typeof createXXSSProtectionHeaderValue>
   >;
-  beforeAll(() => {
+  beforeEach(() => {
     headerValueCreatorMock = jest.fn(createXXSSProtectionHeaderValue);
   });
 
@@ -52,7 +52,7 @@ describe("createXXSSProtectionHeaderValue", () => {
 
   context('when giving "report" as array', () => {
     let strictURIEncoderMock: jest.Mock<ReturnType<typeof encodeStrictURI>, Parameters<typeof encodeStrictURI>>;
-    beforeAll(() => {
+    beforeEach(() => {
       strictURIEncoderMock = jest.fn(encodeStrictURI);
     });
 

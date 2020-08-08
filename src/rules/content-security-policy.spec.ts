@@ -33,7 +33,7 @@ describe("createContentSecurityPolicyHeader", () => {
       Parameters<typeof createContentSecurityPolicyOptionHeaderValue>
     >;
 
-    beforeAll(() => {
+    beforeEach(() => {
       properHeaderNameGetterMock = jest.fn(getProperHeaderName);
       headerValueCreatorMock = jest.fn(createContentSecurityPolicyOptionHeaderValue);
     });
@@ -87,7 +87,7 @@ describe("createContentSecurityPolicyOptionHeaderValue", () => {
       Parameters<typeof convertReportingDirectiveToString>
     >;
 
-    beforeAll(() => {
+    beforeEach(() => {
       fetchDirectiveToStringConverterMock = jest.fn(convertFetchDirectiveToString);
       documentDirectiveToStringConverterMock = jest.fn(convertDocumentDirectiveToString);
       reportingDirectiveToStringConverterMock = jest.fn(convertReportingDirectiveToString);
@@ -150,7 +150,7 @@ describe("getProperHeaderName", () => {
 
 describe("createDirectiveValue", () => {
   let arrayWrapperMock: jest.Mock<any, any>;
-  beforeAll(() => {
+  beforeEach(() => {
     arrayWrapperMock = jest.fn(wrapArray);
   });
 
