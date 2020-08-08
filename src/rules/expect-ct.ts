@@ -1,4 +1,4 @@
-import { ResponseHeader } from "../shared";
+import type { ResponseHeader } from "../shared";
 import { encodeStrictURI } from "./shared";
 
 export type ExpectCTOption = boolean | [true, Partial<{ maxAge: number; enforce: boolean; reportURI: string | URL }>];

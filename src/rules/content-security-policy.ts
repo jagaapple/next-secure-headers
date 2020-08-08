@@ -1,4 +1,4 @@
-import { ResponseHeader } from "../shared";
+import type { ResponseHeader } from "../shared";
 import { encodeStrictURI, wrapArray } from "./shared";
 
 type DirectiveSource = string | string[];
