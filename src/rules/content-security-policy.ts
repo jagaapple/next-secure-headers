@@ -46,7 +46,7 @@ type DocumentDirective = {
 type ReportingDirective = {
   navigateTo: DirectiveSource;
   reportURI: string | URL | (string | URL)[];
-  reportTo: object;
+  reportTo: Record<string, any>;
 };
 
 export type ContentSecurityPolicyOption =
