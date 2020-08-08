@@ -74,20 +74,19 @@ describe("createHeadersObject", () => {
 
   describe("filtering", () => {
     beforeEach(() => {
-      forceHTTPSRedirectHeaderCreatorSpy = jest.spyOn(rules, "createForceHTTPSRedirectHeader");
-      forceHTTPSRedirectHeaderCreatorSpy.mockReturnValue({ name: "dummy-1", value: undefined });
-
-      frameGuardHeaderCreatorSpy = jest.spyOn(rules, "createFrameGuardHeader");
-      frameGuardHeaderCreatorSpy.mockReturnValue({ name: "dummy-2", value: "example-2" });
-
-      noopenHeaderCreatorSpy = jest.spyOn(rules, "createNoopenHeader");
-      noopenHeaderCreatorSpy.mockReturnValue({ name: "dummy-3", value: undefined });
-
-      nosniffHeaderCreatorSpy = jest.spyOn(rules, "createNosniffHeader");
-      nosniffHeaderCreatorSpy.mockReturnValue({ name: "dummy-4", value: "example-4" });
-
-      xssProtectionHeaderCreatorSpy = jest.spyOn(rules, "createXSSProtectionHeader");
-      xssProtectionHeaderCreatorSpy.mockReturnValue({ name: "dummy-3", value: undefined });
+      forceHTTPSRedirectHeaderCreatorSpy = jest
+        .spyOn(rules, "createForceHTTPSRedirectHeader")
+        .mockReturnValue({ name: "dummy-1", value: undefined });
+      frameGuardHeaderCreatorSpy = jest
+        .spyOn(rules, "createFrameGuardHeader")
+        .mockReturnValue({ name: "dummy-2", value: "example-2" });
+      noopenHeaderCreatorSpy = jest.spyOn(rules, "createNoopenHeader").mockReturnValue({ name: "dummy-3", value: undefined });
+      nosniffHeaderCreatorSpy = jest
+        .spyOn(rules, "createNosniffHeader")
+        .mockReturnValue({ name: "dummy-4", value: "example-4" });
+      xssProtectionHeaderCreatorSpy = jest
+        .spyOn(rules, "createXSSProtectionHeader")
+        .mockReturnValue({ name: "dummy-3", value: undefined });
     });
 
     it("should omit headers which have undefined value", () => {
