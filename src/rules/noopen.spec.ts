@@ -5,7 +5,7 @@ describe("createNoopenHeader", () => {
     ReturnType<typeof createXDownloadOptionsHeaderValue>,
     Parameters<typeof createXDownloadOptionsHeaderValue>
   >;
-  beforeAll(() => {
+  beforeEach(() => {
     headerValueCreatorMock = jest.fn(createXDownloadOptionsHeaderValue);
   });
 

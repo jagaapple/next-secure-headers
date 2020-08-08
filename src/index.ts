@@ -85,6 +85,17 @@ export const createHeadersObject = (options: Options = {}) => {
   return newHeaders;
 };
 
+export const createSecureHeaders = (options: Options = {}) => {
+  const headersObject = createHeadersObject(options);
+
+  const headers: { key: string; value: string }[] = [];
+  Object.entries(headersObject).forEach(([key, value]) => {
+    headers.push({ key, value });
+  });
+
+  return headers;
+};
+
 type NextPageContext = { res?: ServerResponse };
 type NextAppContext = { ctx?: NextPageContext };
 type NextComponent<P = any, IP = {}> = React.ComponentType<P> & {
