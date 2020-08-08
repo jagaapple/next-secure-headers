@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import * as rules from "./rules";
-import { createHeadersObject, default as withSecureHeaders } from "./index";
+import { rules } from "./rules";
+import { createHeadersObject, createSecureHeaders, withSecureHeaders } from "./index";
 
 describe("createHeadersObject", () => {
   let contentSecurityPolicyHeaderCreatorSpy: jest.SpyInstance<
@@ -38,7 +38,7 @@ describe("createHeadersObject", () => {
   >;
 
   describe("calling rules", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       contentSecurityPolicyHeaderCreatorSpy = jest.spyOn(rules, "createContentSecurityPolicyHeader");
       expectCTHeaderCreatorSpy = jest.spyOn(rules, "createExpectCTHeader");
       forceHTTPSRedirectHeaderCreatorSpy = jest.spyOn(rules, "createForceHTTPSRedirectHeader");
@@ -73,21 +73,20 @@ describe("createHeadersObject", () => {
   });
 
   describe("filtering", () => {
-    beforeAll(() => {
-      forceHTTPSRedirectHeaderCreatorSpy = jest.spyOn(rules, "createForceHTTPSRedirectHeader");
-      forceHTTPSRedirectHeaderCreatorSpy.mockReturnValue({ name: "dummy-1", value: undefined });
-
-      frameGuardHeaderCreatorSpy = jest.spyOn(rules, "createFrameGuardHeader");
-      frameGuardHeaderCreatorSpy.mockReturnValue({ name: "dummy-2", value: "example-2" });
-
-      noopenHeaderCreatorSpy = jest.spyOn(rules, "createNoopenHeader");
-      noopenHeaderCreatorSpy.mockReturnValue({ name: "dummy-3", value: undefined });
-
-      nosniffHeaderCreatorSpy = jest.spyOn(rules, "createNosniffHeader");
-      nosniffHeaderCreatorSpy.mockReturnValue({ name: "dummy-4", value: "example-4" });
-
-      xssProtectionHeaderCreatorSpy = jest.spyOn(rules, "createXSSProtectionHeader");
-      xssProtectionHeaderCreatorSpy.mockReturnValue({ name: "dummy-3", value: undefined });
+    beforeEach(() => {
+      forceHTTPSRedirectHeaderCreatorSpy = jest
+        .spyOn(rules, "createForceHTTPSRedirectHeader")
+        .mockReturnValue({ name: "dummy-1", value: undefined });
+      frameGuardHeaderCreatorSpy = jest
+        .spyOn(rules, "createFrameGuardHeader")
+        .mockReturnValue({ name: "dummy-2", value: "example-2" });
+      noopenHeaderCreatorSpy = jest.spyOn(rules, "createNoopenHeader").mockReturnValue({ name: "dummy-3", value: undefined });
+      nosniffHeaderCreatorSpy = jest
+        .spyOn(rules, "createNosniffHeader")
+        .mockReturnValue({ name: "dummy-4", value: "example-4" });
+      xssProtectionHeaderCreatorSpy = jest
+        .spyOn(rules, "createXSSProtectionHeader")
+        .mockReturnValue({ name: "dummy-3", value: undefined });
     });
 
     it("should omit headers which have undefined value", () => {
@@ -99,6 +98,33 @@ describe("createHeadersObject", () => {
       expect(returnedHeaders).toHaveProperty("dummy-4", "example-4");
       expect(returnedHeaders).not.toHaveProperty("dummy-5");
     });
+  });
+});
+
+describe("createSecureHeaders", () => {
+  it("should call `createHeadersObject` and convert to `{ key, value } format`", () => {
+    expect(createSecureHeaders()).toEqual([
+      { key: "Strict-Transport-Security", value: "max-age=63072000" },
+      { key: "X-Frame-Options", value: "deny" },
+      { key: "X-Download-Options", value: "noopen" },
+      { key: "X-Content-Type-Options", value: "nosniff" },
+      { key: "X-XSS-Protection", value: "1" },
+    ]);
+    expect(createSecureHeaders({})).toEqual([
+      { key: "Strict-Transport-Security", value: "max-age=63072000" },
+      { key: "X-Frame-Options", value: "deny" },
+      { key: "X-Download-Options", value: "noopen" },
+      { key: "X-Content-Type-Options", value: "nosniff" },
+      { key: "X-XSS-Protection", value: "1" },
+    ]);
+    expect(createSecureHeaders({ frameGuard: "sameorigin", referrerPolicy: "same-origin" })).toEqual([
+      { key: "Strict-Transport-Security", value: "max-age=63072000" },
+      { key: "X-Frame-Options", value: "sameorigin" },
+      { key: "X-Download-Options", value: "noopen" },
+      { key: "X-Content-Type-Options", value: "nosniff" },
+      { key: "Referrer-Policy", value: "same-origin" },
+      { key: "X-XSS-Protection", value: "1" },
+    ]);
   });
 });
 

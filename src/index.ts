@@ -1,7 +1,17 @@
 import * as React from "react";
 import { ServerResponse } from "http";
 
-import * as rules from "./rules";
+import { rules } from "./rules";
+import type {
+  ContentSecurityPolicyOption,
+  ExpectCTOption,
+  ForceHTTPSRedirectOption,
+  FrameGuardOption,
+  NoopenOption,
+  NosniffOption,
+  ReferrerPolicyOption,
+  XSSProtectionOption,
+} from "./rules";
 
 type Options = Partial<{
   /**
@@ -10,39 +20,39 @@ type Options = Partial<{
    * If you give true to `reportOnly` , this sets "Content-Security-Policy-Report-Only" to value instead of
    * "Content-Security-Policy".
    */
-  contentSecurityPolicy: rules.ContentSecurityPolicyOption;
+  contentSecurityPolicy: ContentSecurityPolicyOption;
   /**
    * This is to set "Expect-CT" header and it's to tell browsers to expect Certificate Transparency.
    */
-  expectCT: rules.ExpectCTOption;
+  expectCT: ExpectCTOption;
   /**
    * This is to set "Strict-Transport-Security (HSTS)" header and it's to prevent man-in-the-middle attacks during redirects from HTTP to HTTPS.
    * To enable this is highly recommended if you use HTTPS (SSL) on your servers.
    * By default, this sets `max-age` to two years (63,072,000 seconds).
    * @default [true, { maxAge: 63072000 }]
    */
-  forceHTTPSRedirect: rules.ForceHTTPSRedirectOption;
+  forceHTTPSRedirect: ForceHTTPSRedirectOption;
   /**
    * This is to set "X-Frame-Options" header and it's to prevent clickjacking attacks.
    * `"deny"` is highly recommended if you don't use frame elements such as `iframe` .
    * @default "deny"
    */
-  frameGuard: rules.FrameGuardOption;
+  frameGuard: FrameGuardOption;
   /**
    * This is to set "X-Download-Options" header and it's to prevent to open downloaded files automatically for IE8+ (MIME Handling attacks).
    * @default "noopen"
    */
-  noopen: rules.NoopenOption;
+  noopen: NoopenOption;
   /**
    * This is to set "X-Content-Type-Options" header and it's to prevent MIME Sniffing attacks.
    * @default "nosniff"
    */
-  nosniff: rules.NosniffOption;
+  nosniff: NosniffOption;
   /**
    * This is to set "Referrer-Policy" header and it's to prevent to be got referrer by other servers.
    * You can specify one or more values for legacy browsers which does not support a specific value.
    */
-  referrerPolicy: rules.ReferrerPolicyOption;
+  referrerPolicy: ReferrerPolicyOption;
   /**
    * This is to set "X-XSS-Protection" header and it's to prevent XSS attacks.
    * If you specify `"sanitize"` , this sets the header to `"1"` and browsers will sanitize unsafe area.
@@ -50,7 +60,7 @@ type Options = Partial<{
    * "X-XSS-Protection" blocks many XSS attacks, but Content Security Policy is recommended to use compared to this.
    * @default "sanitize"
    */
-  xssProtection: rules.XSSProtectionOption;
+  xssProtection: XSSProtectionOption;
 }>;
 
 export const createHeadersObject = (options: Options = {}) => {
@@ -75,13 +85,24 @@ export const createHeadersObject = (options: Options = {}) => {
   return newHeaders;
 };
 
+export const createSecureHeaders = (options: Options = {}) => {
+  const headersObject = createHeadersObject(options);
+
+  const headers: { key: string; value: string }[] = [];
+  Object.entries(headersObject).forEach(([key, value]) => {
+    headers.push({ key, value });
+  });
+
+  return headers;
+};
+
 type NextPageContext = { res?: ServerResponse };
 type NextAppContext = { ctx?: NextPageContext };
 type NextComponent<P = any, IP = {}> = React.ComponentType<P> & {
   getInitialProps?(context: NextPageContext & NextAppContext): IP | Promise<IP>;
 };
 
-export default (options: Options = {}) => (ChildComponent: NextComponent) => {
+export const withSecureHeaders = (options: Options = {}) => (ChildComponent: NextComponent) => {
   const Component: NextComponent = (props: any) => React.createElement(ChildComponent, props);
 
   Component.getInitialProps = async (context) => {

@@ -1,1 +1,1 @@
-export * from "./custom-types";
+export type { ResponseHeader } from "./custom-types";

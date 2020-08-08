@@ -21,7 +21,7 @@ describe("createExpectCTHeader", () => {
       ReturnType<typeof createExpectCTHeaderValue>,
       Parameters<typeof createExpectCTHeaderValue>
     >;
-    beforeAll(() => {
+    beforeEach(() => {
       headerValueCreatorMock = jest.fn(createExpectCTHeaderValue);
     });
 
@@ -107,7 +107,7 @@ describe("createExpectCTHeaderValue", () => {
 
   context('when specifying "reportURI" option', () => {
     let strictURIEncoderMock: jest.Mock<ReturnType<typeof encodeStrictURI>, Parameters<typeof encodeStrictURI>>;
-    beforeAll(() => {
+    beforeEach(() => {
       strictURIEncoderMock = jest.fn(encodeStrictURI);
     });
 

@@ -20,7 +20,7 @@ describe("createReferrerPolicyHeader", () => {
       ReturnType<typeof createReferrerPolicyHeaderValue>,
       Parameters<typeof createReferrerPolicyHeaderValue>
     >;
-    beforeAll(() => {
+    beforeEach(() => {
       headerValueCreatorMock = jest.fn(createReferrerPolicyHeaderValue);
     });
 

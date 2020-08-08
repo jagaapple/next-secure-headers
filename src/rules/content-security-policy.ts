@@ -1,4 +1,4 @@
-import { ResponseHeader } from "../shared";
+import type { ResponseHeader } from "../shared";
 import { encodeStrictURI, wrapArray } from "./shared";
 
 type DirectiveSource = string | string[];
@@ -46,7 +46,7 @@ type DocumentDirective = {
 type ReportingDirective = {
   navigateTo: DirectiveSource;
   reportURI: string | URL | (string | URL)[];
-  reportTo: object;
+  reportTo: Record<string, any>;
 };
 
 export type ContentSecurityPolicyOption =

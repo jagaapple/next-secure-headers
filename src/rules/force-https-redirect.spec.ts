@@ -2,7 +2,7 @@ import { createForceHTTPSRedirectHeader, createHSTSHeaderValue } from "./force-h
 
 describe("createForceHTTPSRedirectHeader", () => {
   let headerValueCreatorMock: jest.Mock<ReturnType<typeof createHSTSHeaderValue>, Parameters<typeof createHSTSHeaderValue>>;
-  beforeAll(() => {
+  beforeEach(() => {
     headerValueCreatorMock = jest.fn(createHSTSHeaderValue);
   });
 

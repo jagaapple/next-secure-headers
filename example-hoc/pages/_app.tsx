@@ -1,6 +1,6 @@
 import App from "next/app";
 
-import withSecureHeaders from "next-secure-headers";
+import { withSecureHeaders } from "next-secure-headers";
 
 class Application extends App {}
 

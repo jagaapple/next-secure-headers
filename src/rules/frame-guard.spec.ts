@@ -6,7 +6,7 @@ describe("createFrameGuardHeader", () => {
     ReturnType<typeof createXFrameOptionsHeaderValue>,
     Parameters<typeof createXFrameOptionsHeaderValue>
   >;
-  beforeAll(() => {
+  beforeEach(() => {
     headerValueCreatorMock = jest.fn(createXFrameOptionsHeaderValue);
   });
 
@@ -52,7 +52,7 @@ describe("createXFrameOptionsHeaderValue", () => {
 
   context('when giving "allow-from" as array', () => {
     let strictURIEncoderMock: jest.Mock<ReturnType<typeof encodeStrictURI>, Parameters<typeof encodeStrictURI>>;
-    beforeAll(() => {
+    beforeEach(() => {
       strictURIEncoderMock = jest.fn(encodeStrictURI);
     });
 

@@ -2,22 +2,31 @@
 
 <h4 align="center">⛑️ Sets secure response headers for Next.js. 🌻</h4>
 
-```tsx
-export default withSecureHeaders({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: "'self'",
-      styleSrc: ["'self'", "https://stackpath.bootstrapcdn.com"],
-    },
+```js
+// /next.config.js
+
+module.exports = {
+  async headers() {
+    return [{
+      soruce: "/(.*)",
+      headers: createSecureHeaders({
+        contentSecurityPolicy: {
+          directives: {
+            defaultSrc: "'self'",
+            styleSrc: ["'self'", "https://stackpath.bootstrapcdn.com"],
+          },
+        },
+        forceHTTPSRedirect: [true, { maxAge: 60 * 60 * 24 * 4, includeSubDomains: true }],
+        referrerPolicy: "same-origin",
+      })
+    }];
   },
-  forceHTTPSRedirect: [true, { maxAge: 60 * 60 * 24 * 4, includeSubDomains: true }],
-  referrerPolicy: "same-origin",
-})(Application);
+};
 ```
 
 <div align="center">
 <a href="https://www.npmjs.com/package/next-secure-headers"><img src="https://img.shields.io/npm/v/next-secure-headers.svg" alt="npm"></a>
-<a href="https://circleci.com/gh/jagaapple/next-secure-headers"><img src="https://img.shields.io/circleci/project/github/jagaapple/next-secure-headers/master.svg" alt="CircleCI"></a>
+<a href="https://github.com/jagaapple/next-secure-headers/actions"><img src="https://github.com/jagaapple/next-secure-headers/workflows/Build%20and%20test/badge.svg" alt="GitHub Actions"></a>
 <a href="https://codecov.io/gh/jagaapple/next-secure-headers"><img src="https://img.shields.io/codecov/c/github/jagaapple/next-secure-headers.svg"></a>
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/github/license/jagaapple/next-secure-headers.svg" alt="license"></a>
 <a href="https://twitter.com/jagaapple_tech"><img src="https://img.shields.io/badge/contact-%40jagaapple_tech-blue.svg" alt="@jagaapple_tech"></a>
@@ -35,6 +44,8 @@ export default withSecureHeaders({
   - [Requirements](#requirements)
   - [Installation](#installation)
   - [Setup](#setup)
+    - [Use `createSecureHeaders` in `next.config.js` (RECOMMENDED)](#use-createsecureheaders-in-nextconfigjs-recommended)
+    - [Use `withSecureHeaders` in page components](#use-withsecureheaders-in-page-components)
 - [Rules](#rules)
   - [`forceHTTPSRedirect`](#forcehttpsredirect)
   - [`frameGuard`](#frameguard)
@@ -45,11 +56,12 @@ export default withSecureHeaders({
   - [`expectCT`](#expectct)
   - [`referrerPolicy`](#referrerpolicy)
 - [API](#api)
-  - [Default Export](#default-export)
+  - [`createSecureHeaders`](#createsecureheaders)
+  - [`withSecureHeaders`](#withsecureheaders)
   - [`createHeadersObject`](#createheadersobject)
 - [Recipes](#recipes)
   - [How to remove X-Powered-By header](#how-to-remove-x-powered-by-header)
-  - [Overrides headers in a specific page](#overrides-headers-in-a-specific-page)
+  - [Overrides headers in a specific page using `withSecureHeaders`](#overrides-headers-in-a-specific-page-using-withsecureheaders)
 - [Contributing to next-secure-headers](#contributing-to-next-secure-headers)
 - [License](#license)
 
@@ -57,56 +69,56 @@ export default withSecureHeaders({
 
 
 ## Features
-| FEATURES                    | WHAT YOU CAN DO                                    |
-|-----------------------------|----------------------------------------------------|
-| ⚛️ **Designed for Next.js**  | Use for page components in `/pages`                |
-| ✨ **Default applied rules** | Help your project even if you don't have knowledge |
-| 🎩 **Type Safe**            | You can use with TypeScript                        |
+| FEATURES                    | WHAT YOU CAN DO                                         |
+|-----------------------------|---------------------------------------------------------|
+| ⚛️ **Designed for Next.js**  | Use for `next.config.js` or page components in `/pages` |
+| ✨ **Default applied rules** | Help your project even if you don't have knowledge      |
+| 🎩 **Type Safe**            | You can use with TypeScript                             |
 
 ### Why use next-secure-headers instead of Helmet?
-next-secure-headers is a similar to [Helmet](https://github.com/helmetjs/helmet) which sets HTTP response headers related to
+next-secure-headers is a similar to [Helmet](https://github.com/helmetjs/helmet), which sets HTTP response headers related to
 security for Express.js.
 
 Next.js supports to be used in Node.js frameworks such as Express.js. So you can use Helmet with your Next.js project if you
-create a custom server, but a custom server is not recommended by Next.js development team. Also they are working to implement
-in order to be possible to use Next.js without a custom server. In fact, Next.js 9 supports
+create a custom server, but the Next.js development team does not recommend a custom server.
+Also, they are working to implement in order to be possible to use Next.js without a custom server. In fact, Next.js 9 supports
 [Dynamic Routing](https://github.com/zeit/next.js/#dynamic-routing), so we don't need to build a custom server in order to
-implement it using such as [next-routes](https://github.com/fridays/next-routes) which requires a custom server.
+implement it using such as [next-routes](https://github.com/fridays/next-routes), which requires a custom server.
 
-```ts
-// /pages/_app.tsx
-import withSecureHeaders from "next-secure-headers";
+```js
+// /next.config.js
+const { createSecureHeaders } = require("next-secure-headers");
 
-class Application extends App {
-  ...
-}
-
-export default withSecureHeaders()(Application);
+module.exports = {
+  async headers() {
+    return [{ soruce: "/(.*)", headers: createSecureHeaders() }];
+  },
+};
 ```
 
 If you want to use Helmet, it requires to use a custom server against a recommended way. To solve this problem, next-secure-headers
-was born. next-secure-headers is built for Next.js project, so you can use it in page components as HOC like other libraries for
-Next.js such as [next-redux-wrapper](https://github.com/kirill-konshin/next-redux-wrapper).
+was born. next-secure-headers is built for Next.js project so that you can specify any headers in `next.config.js` or page
+components.
 
 #### next-secure-headers vs Helmet
 The following are rules next-secure-headers has and Helmet has. next-secure-headers is inspired by Helmet, but it don't have
 some rules for some reason.
 
-| | next-secure-headers | Helmet | Comment
-|---|---|---|---
-| Strict-Transport-Security | `forceHTTPSRedirect` | `hsts` |
-| X-Frame-Options | `frameGuard` | `frameguard` |
-| X-Download-Options | `noopen` | `ieNoOpen` |
-| X-Content-Type-Options | `nosniff` | `noSniff` |
-| X-XSS-Protection | `xssProtection` | `xssFilter` |
-| Content-Security-Policy | `contentSecurityPolicy` | `contentSecurityPolicy` |
-| Expect-CT | `expectCT` | `expectCt` |
-| Referrer-Policy | `referrerPolicy` | `referrerPolicy` |
-| X-DNS-Prefetch-Control | - | `dnsPrefetchControl` | This has privacy implications but this improves performance.
-| Feature-Policy | - | `featurePolicy` | Feature Policy improves security but it is working draft yet.
-| X-Powered-By | - | `hidePoweredBy` | [Next.js supports to remove this header in `next.config.js`](#how-to-remove-x-powered-by-header).
-| Related to cache | - | `nocache` | As Helmet said, caching has lots of benefits.
-| X-Permitted-Cross-Domain-Policies | - | `crossdomain` | Adobe Flash is one of old web technologies.
+|                                   | next-secure-headers     | Helmet                  | Comment                                                                                           |
+|-----------------------------------|-------------------------|-------------------------|---------------------------------------------------------------------------------------------------|
+| Strict-Transport-Security         | `forceHTTPSRedirect`    | `hsts`                  |                                                                                                   |
+| X-Frame-Options                   | `frameGuard`            | `frameguard`            |                                                                                                   |
+| X-Download-Options                | `noopen`                | `ieNoOpen`              |                                                                                                   |
+| X-Content-Type-Options            | `nosniff`               | `noSniff`               |                                                                                                   |
+| X-XSS-Protection                  | `xssProtection`         | `xssFilter`             |                                                                                                   |
+| Content-Security-Policy           | `contentSecurityPolicy` | `contentSecurityPolicy` |                                                                                                   |
+| Expect-CT                         | `expectCT`              | `expectCt`              |                                                                                                   |
+| Referrer-Policy                   | `referrerPolicy`        | `referrerPolicy`        |                                                                                                   |
+| X-DNS-Prefetch-Control            | -                       | `dnsPrefetchControl`    | This has privacy implications but this improves performance.                                      |
+| Feature-Policy                    | -                       | `featurePolicy`         | Feature Policy improves security but it is working draft yet.                                     |
+| X-Powered-By                      | -                       | `hidePoweredBy`         | [Next.js supports to remove this header in `next.config.js`](#how-to-remove-x-powered-by-header). |
+| Related to cache                  | -                       | `nocache`               | As Helmet said, caching has lots of benefits.                                                     |
+| X-Permitted-Cross-Domain-Policies | -                       | `crossdomain`           | Adobe Flash is one of old web technologies.                                                       |
 
 
 ## Quick Start
@@ -117,22 +129,79 @@ some rules for some reason.
 
 ### Installation
 ```bash
-$ npm install next-secure-headers
+$ npm install -D next-secure-headers
 ```
 
 If you are using Yarn, use the following command.
 
 ```bash
-$ yarn add next-secure-headers
+$ yarn add -D next-secure-headers
 ```
 
+> ❗️ **For `withSecureHeaders` .**
+> If you want to use `withSecureHeaders` , you have to install without `-D` option (i.e., installing as `dependencies` not
+> `devDependencies` ).
+
 ### Setup
-Firstly use an exported function for your Next.js application in `/pages/_app.tsx` . Also you can use in any
-page components in `/pages/xxx.tsx` instead.
+There are two ways to specify headers.
+One is to use `createSecureHeaders` in `next.config.js` , and another is to use `withSecureHeaders` in page components.
+
+#### Use `createSecureHeaders` in `next.config.js` (RECOMMENDED)
+> ❗️ **Next.js 9.5 or higher is required.**
+> `headers` function has been supported since Next.js 9.5, so you have to use Next.js 9.5 or higher if you want to use this way.
+
+This way uses `createSecureHeaders` function and [a built-in header configuration way by Next.js](https://nextjs.org/docs/api-reference/next.config.js/headers).
+This is not required any servers, can be used in static pages, and can retain [Automatic Static Optimization](https://nextjs.org/docs/advanced-features/automatic-static-optimization).
+If your project does not use any servers (using static pages or SSG) or you have just created a Next.js project, I recommend retaining static pages and adopting this way.
+
+Import `createSecureHeaders` from next-secure-headers and use it in `headers` async function in `next.config.js` .
+
+```js
+// /next.config.js
+const { createSecureHeaders } = require("next-secure-headers");
+
+module.exports = {
+  async headers() {
+    return [{ soruce: "/(.*)", headers: createSecureHeaders() }];
+  },
+};
+```
+
+By default, next-secure-headers applies some rules. If you want to enable or disable rules, you can give options to the first
+argument of the function.
+
+```js
+module.exports = {
+  async headers() {
+    return [{
+      soruce: "/(.*)",
+      headers: createSecureHeaders({
+        contentSecurityPolicy: {
+          directives: {
+            defaultSrc: "'self'",
+            styleSrc: ["'self'", "https://stackpath.bootstrapcdn.com"],
+          },
+        },
+        forceHTTPSRedirect: [true, { maxAge: 60 * 60 * 24 * 4, includeSubDomains: true }],
+        referrerPolicy: "same-origin",
+      }),
+    }];
+  },
+};
+```
+
+Also, you can configure different headers by URLs following [the official documents](https://nextjs.org/docs/api-reference/next.config.js/headers).
+
+#### Use `withSecureHeaders` in page components
+> ❗️ **Servers are required.**
+> This way requires any servers because `withSecureHeaders` uses `getServerSideProps` of Next.js.
+
+Use an exported function for your Next.js application in `/pages/_app.tsx` . Also, you can use in any page components in
+`/pages/xxx.tsx` instead.
 
 ```ts
 // /pages/_app.tsx
-import withSecureHeaders from "next-secure-headers";
+import { withSecureHeaders } from "next-secure-headers";
 
 class Application extends App {
   ...
@@ -141,7 +210,7 @@ class Application extends App {
 export default withSecureHeaders()(Application);
 ```
 
-By default, next-secure-headers applies some rules. If you want to enable or disable rules, you can give settings to the first
+By default, next-secure-headers applies some rules. If you want to enable or disable rules, you can give options to the first
 argument of the function.
 
 ```ts
@@ -166,9 +235,9 @@ export default withSecureHeaders({
 }
 ```
 
-| Default Value | MDN
-|---|---
-| `[true, { maxAge: 63072000 }]` | https://developer.mozilla.org/docs/Web/HTTP/Headers/Strict-Transport-Security
+| Default Value                  | MDN                                                                           |
+|--------------------------------|-------------------------------------------------------------------------------|
+| `[true, { maxAge: 63072000 }]` | https://developer.mozilla.org/docs/Web/HTTP/Headers/Strict-Transport-Security |
 
 This is to set "Strict-Transport-Security (HSTS)" header and it's to prevent man-in-the-middle attacks during redirects from
 HTTP to HTTPS. To enable this is highly recommended if you use HTTPS (SSL) on your servers.
@@ -183,9 +252,9 @@ this sets `max-age` to two years (63,072,000 seconds).
 }
 ```
 
-| Default Value | MDN
-|---|---
-| `"deny"` | https://developer.mozilla.org/docs/Web/HTTP/Headers/X-Frame-Options
+| Default Value | MDN                                                                 |
+|---------------|---------------------------------------------------------------------|
+| `"deny"`      | https://developer.mozilla.org/docs/Web/HTTP/Headers/X-Frame-Options |
 
 This is to set "X-Frame-Options" header and it's to prevent clickjacking attacks. `"deny"` is highly recommended if you don't
 use frame elements such as `iframe` .
@@ -197,9 +266,9 @@ use frame elements such as `iframe` .
 }
 ```
 
-| Default Value | MDN
-|---|---
-| `"noopen"` | https://developer.mozilla.org/docs/Web/HTTP/Headers/X-Download-Options
+| Default Value | MDN                                                                    |
+|---------------|------------------------------------------------------------------------|
+| `"noopen"`    | https://developer.mozilla.org/docs/Web/HTTP/Headers/X-Download-Options |
 
 This is to set "X-Download-Options" header and it's to prevent to open downloaded files automatically for IE8+ (MIME Handling
 attacks).
@@ -211,9 +280,9 @@ attacks).
 }
 ```
 
-| Default Value | MDN
-|---|---
-| `"nosniff"` | https://developer.mozilla.org/docs/Web/HTTP/Headers/X-Content-Type-Options
+| Default Value | MDN                                                                        |
+|---------------|----------------------------------------------------------------------------|
+| `"nosniff"`   | https://developer.mozilla.org/docs/Web/HTTP/Headers/X-Content-Type-Options |
 
 This is to set "X-Content-Type-Options" header and it's to prevent MIME Sniffing attacks.
 
@@ -224,9 +293,9 @@ This is to set "X-Content-Type-Options" header and it's to prevent MIME Sniffing
 }
 ```
 
-| Default Value | MDN
-|---|---
-| `"sanitize"` | https://developer.mozilla.org/docs/Web/HTTP/Headers/X-XSS-Protection
+| Default Value | MDN                                                                  |
+|---------------|----------------------------------------------------------------------|
+| `"sanitize"`  | https://developer.mozilla.org/docs/Web/HTTP/Headers/X-XSS-Protection |
 
 This is to set "X-XSS-Protection" header and it's to prevent XSS attacks.
 
@@ -282,16 +351,16 @@ blocks many XSS attacks, but Content Security Policy is recommended to use compa
           & Partial<{
             navigateTo: string | string[];
             reportURI: string | URL | (string | URL)[];
-            reportTo: object;
+            reportTo: Record<string, any>;
           }>;
         reportOnly?: boolean;
       };
 }
 ```
 
-| Default Value | MDN
-|---|---
-| `false` | https://developer.mozilla.org/docs/Web/HTTP/Headers/Content-Security-Policy
+| Default Value | MDN                                                                         |
+|---------------|-----------------------------------------------------------------------------|
+| `false`       | https://developer.mozilla.org/docs/Web/HTTP/Headers/Content-Security-Policy |
 
 This is to set "Content-Security-Policy" or "Content-Security-Policy-Report-Only" header and it's to prevent to load and execute
 non-allowed resources.
@@ -305,9 +374,9 @@ If you give true to `reportOnly` , this sets "Content-Security-Policy-Report-Onl
 }
 ```
 
-| Default Value | MDN
-|---|---
-| `false` | https://developer.mozilla.org/docs/Web/HTTP/Headers/Expect-CT
+| Default Value | MDN                                                           |
+|---------------|---------------------------------------------------------------|
+| `false`       | https://developer.mozilla.org/docs/Web/HTTP/Headers/Expect-CT |
 
 This is to set "Expect-CT" header and it's to tell browsers to expect Certificate Transparency.
 
@@ -321,24 +390,45 @@ This is to set "Expect-CT" header and it's to tell browsers to expect Certificat
 }
 ```
 
-| Default Value | MDN
-|---|---
-| `false` | https://developer.mozilla.org/docs/Web/HTTP/Headers/Referrer-Policy
+| Default Value | MDN                                                                 |
+|---------------|---------------------------------------------------------------------|
+| `false`       | https://developer.mozilla.org/docs/Web/HTTP/Headers/Referrer-Policy |
 
 This is to set "Referrer-Policy" header and it's to prevent to be got referrer by other servers. You can specify one or more
 values for legacy browsers which does not support a specific value.
 
 
 ## API
-### Default Export
+### `createSecureHeaders`
 ```ts
-import withSecureHeaders from "next-secure-headers";
+import { createSecureHeaders } from "next-secure-headers";
+
+createSecureHeaders({ referrerPolicy: "same-origin" });
+// [
+//   {
+//     key: "Referrer-Policy",
+//     value: "same-origin",
+//   },
+// ]
+```
+
+`createSecureHeaders` is a function to return headers as object following a format like `{ key, value }` .
+
+```ts
+createSecureHeaders(OPTIONS);
+```
+
+The first argument accepts options for rules.
+
+### `withSecureHeaders`
+```ts
+import { withSecureHeaders } from "next-secure-headers";
 
 export default withSecureHeaders({ referrerPolicy: "same-origin" })(Page);
 ```
 
-next-secure-headers exports a HOC for Next.js as default export. You can use this function for application ( `/pages/_app.tsx` )
-and page components ( `/pages/xxx.tsx` ).
+`withSecureHeaders` is a HOC to specify headers using `getServerSideProps` . You can use this function for application
+( `/pages/_app.tsx` ) and page components ( `/pages/xxx.tsx` ). **THIS IS NOT AVAILBLE IN `next.config.js` .**
 
 ```ts
 withSecureHeaders(OPTIONS)(APPLICATION_OR_COMPONENT);
@@ -357,7 +447,7 @@ createHeadersObject({ referrerPolicy: "same-origin" });
 // }
 ```
 
-`createHeadersObject` is a function to return HTTP headers as object.
+`createHeadersObject` is a function to return headers as object.
 
 ```ts
 createHeadersObject(OPTIONS);
@@ -382,7 +472,7 @@ module.exports = {
 
 If you give false to `poweredByHeader` in `next.config.js` , Next.js removes the header from response headers.
 
-### Overrides headers in a specific page
+### Overrides headers in a specific page using `withSecureHeaders`
 ```ts
 // /pages/_app.tsx
 export default withSecureHeaders({ referrerPolicy: "same-origin" })(Application);
@@ -397,7 +487,7 @@ architecture.
 
 ```ts
 // /config/secure-headers.ts
-import withSecureHeaders from "next-secure-headers";
+import { withSecureHeaders } from "next-secure-headers";
 
 export const secureHeadersDefaultOption: Parameters<typeof withSecureHeaders>[0] = {
   referrerPolicy: "same-origin",
@@ -430,4 +520,4 @@ Please read [Contributing Guidelines](./.github/CONTRIBUTING.md) before developm
 ## License
 The library is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
 
-Copyright 2019 Jaga Apple. All rights reserve
+Copyright 2020 Jaga Apple. All rights reserved.

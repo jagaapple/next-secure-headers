@@ -1,4 +1,4 @@
-import { ResponseHeader } from "../shared";
+import type { ResponseHeader } from "../shared";
 
 export type NosniffOption = false | "nosniff";
 

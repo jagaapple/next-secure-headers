@@ -39,7 +39,7 @@ message.
 |:---------|:----------------------------------------------------------|:------------------------------------------------------------------------------|
 | `Add`    | Implement functions/Add files/Support new platform        |                                                                               |
 | `Change` | Change current spec                                       | Use this type when breaking changes are happened, otherwise DO NOT use.       |
-| `Fix`    | Fix bugs                                                  | Use this type when fix bugs, otherwise DO NOT use.                            |
+| `Fix`    | Fix bugs                                                  | Use this type when you fix bugs, otherwise DO NOT use.                        |
 | `Modify` | Modify wording                                            | Use this type when breaking changes are not happened and fix other than bugs. |
 | `Clean`  | Refactor some codes/Rename classes, methods, or variables |                                                                               |
 | `Remove` | Remove unneeded files or libraries                        |                                                                               |
@@ -59,7 +59,7 @@ Add Implement sign up system
 ```
 
 ### `<SUMMARY>`
-`<SUMMARY>` is a sumamry of changes, do not exceed 50 characters including a commit type. Do not include period `.` because
+`<SUMMARY>` is a summary of changes, do not exceed 50 characters including a commit type. Do not include period `.` because
 a summary should be expressed one sentence. Also start with upper case.
 
 ```bash

@@ -5,7 +5,7 @@ describe("createNosniffHeader", () => {
     ReturnType<typeof createXContentTypeOptionsHeaderValue>,
     Parameters<typeof createXContentTypeOptionsHeaderValue>
   >;
-  beforeAll(() => {
+  beforeEach(() => {
     headerValueCreatorMock = jest.fn(createXContentTypeOptionsHeaderValue);
   });
 
