@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { rules } from "./rules";
-import { createHeadersObject, withSecureHeaders } from "./index";
+import { createHeadersObject, createSecureHeaders, withSecureHeaders } from "./index";
 
 describe("createHeadersObject", () => {
   let contentSecurityPolicyHeaderCreatorSpy: jest.SpyInstance<
@@ -98,6 +98,33 @@ describe("createHeadersObject", () => {
       expect(returnedHeaders).toHaveProperty("dummy-4", "example-4");
       expect(returnedHeaders).not.toHaveProperty("dummy-5");
     });
+  });
+});
+
+describe("createSecureHeaders", () => {
+  it("should call `createHeadersObject` and convert to `{ key, value } format`", () => {
+    expect(createSecureHeaders()).toEqual([
+      { key: "Strict-Transport-Security", value: "max-age=63072000" },
+      { key: "X-Frame-Options", value: "deny" },
+      { key: "X-Download-Options", value: "noopen" },
+      { key: "X-Content-Type-Options", value: "nosniff" },
+      { key: "X-XSS-Protection", value: "1" },
+    ]);
+    expect(createSecureHeaders({})).toEqual([
+      { key: "Strict-Transport-Security", value: "max-age=63072000" },
+      { key: "X-Frame-Options", value: "deny" },
+      { key: "X-Download-Options", value: "noopen" },
+      { key: "X-Content-Type-Options", value: "nosniff" },
+      { key: "X-XSS-Protection", value: "1" },
+    ]);
+    expect(createSecureHeaders({ frameGuard: "sameorigin", referrerPolicy: "same-origin" })).toEqual([
+      { key: "Strict-Transport-Security", value: "max-age=63072000" },
+      { key: "X-Frame-Options", value: "sameorigin" },
+      { key: "X-Download-Options", value: "noopen" },
+      { key: "X-Content-Type-Options", value: "nosniff" },
+      { key: "Referrer-Policy", value: "same-origin" },
+      { key: "X-XSS-Protection", value: "1" },
+    ]);
   });
 });
 
