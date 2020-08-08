@@ -1,4 +1,4 @@
-import { ResponseHeader } from "../shared";
+import type { ResponseHeader } from "../shared";
 import { encodeStrictURI } from "./shared";
 
 export type FrameGuardOption = false | "deny" | "sameorigin" | ["allow-from", { uri: string | URL }];

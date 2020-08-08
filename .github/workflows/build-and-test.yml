@@ -53,7 +53,7 @@ jobs:
       - name: "Restore cached dependencies"
         id: "node-modules-dependencies"
         uses: "actions/cache@v2"
-        with: ,
+        with:
           path: "./node_modules"
           key: "node-modules-${{ needs.parameters.outputs.GITHUB_SHA }}-${{ matrix.node }}"
       - name: "Execute tests"

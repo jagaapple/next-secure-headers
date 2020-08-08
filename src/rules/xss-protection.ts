@@ -1,4 +1,4 @@
-import { ResponseHeader } from "../shared";
+import type { ResponseHeader } from "../shared";
 import { encodeStrictURI } from "./shared";
 
 export type XSSProtectionOption = false | "sanitize" | "block-rendering" | ["report", { uri: string | URL }];
