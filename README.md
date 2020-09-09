@@ -8,7 +8,7 @@
 module.exports = {
   async headers() {
     return [{
-      soruce: "/(.*)",
+      source: "/(.*)",
       headers: createSecureHeaders({
         contentSecurityPolicy: {
           directives: {
@@ -91,7 +91,7 @@ const { createSecureHeaders } = require("next-secure-headers");
 
 module.exports = {
   async headers() {
-    return [{ soruce: "/(.*)", headers: createSecureHeaders() }];
+    return [{ source: "/(.*)", headers: createSecureHeaders() }];
   },
 };
 ```
@@ -162,7 +162,7 @@ const { createSecureHeaders } = require("next-secure-headers");
 
 module.exports = {
   async headers() {
-    return [{ soruce: "/(.*)", headers: createSecureHeaders() }];
+    return [{ source: "/(.*)", headers: createSecureHeaders() }];
   },
 };
 ```
@@ -174,7 +174,7 @@ argument of the function.
 module.exports = {
   async headers() {
     return [{
-      soruce: "/(.*)",
+      source: "/(.*)",
       headers: createSecureHeaders({
         contentSecurityPolicy: {
           directives: {
