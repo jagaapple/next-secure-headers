@@ -1,4 +1,16 @@
 # Changelog
+## 2.1.0 (2020-12-27)
+- Add support for Node.js 14 #36 - [@jagaapple](https://github.com/jagaapple)
+- Add support for chain-case directive styles to CSP #40 - [@jagaapple](https://github.com/jagaapple)
+- Fix readme #37 - [@jagaapple](https://github.com/jagaapple)
+- Fix `invalid bin field` warning #39 - [@jagaapple](https://github.com/jagaapple)
+- Fix `report-to` directive #38
+  - Fix parse processes
+  - Fix invalid value like `undefined <directive-name>` when `report-uri` or `report-to` is specified
+- Improve development environment
+  - Update dependencies #34 - [@jagaapple](https://github.com/jagaapple)
+  - Change Node.js version in development #34 - [@jagaapple](https://github.com/jagaapple)
+
 ## 2.0.0 (2020-08-08)
 - Add support for static pages without any servers 🎉
   - Add `createSecureHeaders` function #25 - [@jagaapple](https://github.com/jagaapple)
