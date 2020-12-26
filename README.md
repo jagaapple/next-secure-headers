@@ -373,7 +373,7 @@ non-allowed resources.
 
 If you give true to `reportOnly` , this sets "Content-Security-Policy-Report-Only" to value instead of "Content-Security-Policy".
 
-Also you can specify directives using kebab-case name such as `child-src` instead of `childSrc` .
+Also you can specify directives using chain-case names such as `child-src` instead of `childSrc` .
 
 ### `expectCT`
 ```ts
