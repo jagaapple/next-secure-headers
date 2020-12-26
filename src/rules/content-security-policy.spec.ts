@@ -190,6 +190,11 @@ describe("convertFetchDirectiveToString", () => {
       expect(convertFetchDirectiveToString({ childSrc: ["'self'", "https://www.example.com/"] })).toBe(
         "child-src 'self' https://www.example.com/",
       );
+
+      expect(convertFetchDirectiveToString({ "child-src": "'self'" })).toBe("child-src 'self'");
+      expect(convertFetchDirectiveToString({ "child-src": ["'self'", "https://www.example.com/"] })).toBe(
+        "child-src 'self' https://www.example.com/",
+      );
     });
   });
 
@@ -197,6 +202,11 @@ describe("convertFetchDirectiveToString", () => {
     it('should return value which includes "connect-src"', () => {
       expect(convertFetchDirectiveToString({ connectSrc: "'self'" })).toBe("connect-src 'self'");
       expect(convertFetchDirectiveToString({ connectSrc: ["'self'", "https://www.example.com/"] })).toBe(
+        "connect-src 'self' https://www.example.com/",
+      );
+
+      expect(convertFetchDirectiveToString({ "connect-src": "'self'" })).toBe("connect-src 'self'");
+      expect(convertFetchDirectiveToString({ "connect-src": ["'self'", "https://www.example.com/"] })).toBe(
         "connect-src 'self' https://www.example.com/",
       );
     });
@@ -208,6 +218,11 @@ describe("convertFetchDirectiveToString", () => {
       expect(convertFetchDirectiveToString({ defaultSrc: ["'self'", "https://www.example.com/"] })).toBe(
         "default-src 'self' https://www.example.com/",
       );
+
+      expect(convertFetchDirectiveToString({ "default-src": "'self'" })).toBe("default-src 'self'");
+      expect(convertFetchDirectiveToString({ "default-src": ["'self'", "https://www.example.com/"] })).toBe(
+        "default-src 'self' https://www.example.com/",
+      );
     });
   });
 
@@ -215,6 +230,11 @@ describe("convertFetchDirectiveToString", () => {
     it('should return value which includes "font-src"', () => {
       expect(convertFetchDirectiveToString({ fontSrc: "'self'" })).toBe("font-src 'self'");
       expect(convertFetchDirectiveToString({ fontSrc: ["'self'", "https://www.example.com/"] })).toBe(
+        "font-src 'self' https://www.example.com/",
+      );
+
+      expect(convertFetchDirectiveToString({ "font-src": "'self'" })).toBe("font-src 'self'");
+      expect(convertFetchDirectiveToString({ "font-src": ["'self'", "https://www.example.com/"] })).toBe(
         "font-src 'self' https://www.example.com/",
       );
     });
@@ -226,6 +246,11 @@ describe("convertFetchDirectiveToString", () => {
       expect(convertFetchDirectiveToString({ frameSrc: ["'self'", "https://www.example.com/"] })).toBe(
         "frame-src 'self' https://www.example.com/",
       );
+
+      expect(convertFetchDirectiveToString({ "frame-src": "'self'" })).toBe("frame-src 'self'");
+      expect(convertFetchDirectiveToString({ "frame-src": ["'self'", "https://www.example.com/"] })).toBe(
+        "frame-src 'self' https://www.example.com/",
+      );
     });
   });
 
@@ -233,6 +258,11 @@ describe("convertFetchDirectiveToString", () => {
     it('should return value which includes "img-src"', () => {
       expect(convertFetchDirectiveToString({ imgSrc: "'self'" })).toBe("img-src 'self'");
       expect(convertFetchDirectiveToString({ imgSrc: ["'self'", "https://www.example.com/"] })).toBe(
+        "img-src 'self' https://www.example.com/",
+      );
+
+      expect(convertFetchDirectiveToString({ "img-src": "'self'" })).toBe("img-src 'self'");
+      expect(convertFetchDirectiveToString({ "img-src": ["'self'", "https://www.example.com/"] })).toBe(
         "img-src 'self' https://www.example.com/",
       );
     });
@@ -244,6 +274,11 @@ describe("convertFetchDirectiveToString", () => {
       expect(convertFetchDirectiveToString({ manifestSrc: ["'self'", "https://www.example.com/"] })).toBe(
         "manifest-src 'self' https://www.example.com/",
       );
+
+      expect(convertFetchDirectiveToString({ "manifest-src": "'self'" })).toBe("manifest-src 'self'");
+      expect(convertFetchDirectiveToString({ "manifest-src": ["'self'", "https://www.example.com/"] })).toBe(
+        "manifest-src 'self' https://www.example.com/",
+      );
     });
   });
 
@@ -251,6 +286,11 @@ describe("convertFetchDirectiveToString", () => {
     it('should return value which includes "media-src"', () => {
       expect(convertFetchDirectiveToString({ mediaSrc: "'self'" })).toBe("media-src 'self'");
       expect(convertFetchDirectiveToString({ mediaSrc: ["'self'", "https://www.example.com/"] })).toBe(
+        "media-src 'self' https://www.example.com/",
+      );
+
+      expect(convertFetchDirectiveToString({ "media-src": "'self'" })).toBe("media-src 'self'");
+      expect(convertFetchDirectiveToString({ "media-src": ["'self'", "https://www.example.com/"] })).toBe(
         "media-src 'self' https://www.example.com/",
       );
     });
@@ -262,6 +302,11 @@ describe("convertFetchDirectiveToString", () => {
       expect(convertFetchDirectiveToString({ prefetchSrc: ["'self'", "https://www.example.com/"] })).toBe(
         "prefetch-src 'self' https://www.example.com/",
       );
+
+      expect(convertFetchDirectiveToString({ "prefetch-src": "'self'" })).toBe("prefetch-src 'self'");
+      expect(convertFetchDirectiveToString({ "prefetch-src": ["'self'", "https://www.example.com/"] })).toBe(
+        "prefetch-src 'self' https://www.example.com/",
+      );
     });
   });
 
@@ -269,6 +314,11 @@ describe("convertFetchDirectiveToString", () => {
     it('should return value which includes "object-src"', () => {
       expect(convertFetchDirectiveToString({ objectSrc: "'self'" })).toBe("object-src 'self'");
       expect(convertFetchDirectiveToString({ objectSrc: ["'self'", "https://www.example.com/"] })).toBe(
+        "object-src 'self' https://www.example.com/",
+      );
+
+      expect(convertFetchDirectiveToString({ "object-src": "'self'" })).toBe("object-src 'self'");
+      expect(convertFetchDirectiveToString({ "object-src": ["'self'", "https://www.example.com/"] })).toBe(
         "object-src 'self' https://www.example.com/",
       );
     });
@@ -280,6 +330,11 @@ describe("convertFetchDirectiveToString", () => {
       expect(convertFetchDirectiveToString({ scriptSrc: ["'self'", "https://www.example.com/"] })).toBe(
         "script-src 'self' https://www.example.com/",
       );
+
+      expect(convertFetchDirectiveToString({ "script-src": "'self'" })).toBe("script-src 'self'");
+      expect(convertFetchDirectiveToString({ "script-src": ["'self'", "https://www.example.com/"] })).toBe(
+        "script-src 'self' https://www.example.com/",
+      );
     });
   });
 
@@ -287,6 +342,11 @@ describe("convertFetchDirectiveToString", () => {
     it('should return value which includes "script-src-elem"', () => {
       expect(convertFetchDirectiveToString({ scriptSrcElem: "'self'" })).toBe("script-src-elem 'self'");
       expect(convertFetchDirectiveToString({ scriptSrcElem: ["'self'", "https://www.example.com/"] })).toBe(
+        "script-src-elem 'self' https://www.example.com/",
+      );
+
+      expect(convertFetchDirectiveToString({ "script-src-elem": "'self'" })).toBe("script-src-elem 'self'");
+      expect(convertFetchDirectiveToString({ "script-src-elem": ["'self'", "https://www.example.com/"] })).toBe(
         "script-src-elem 'self' https://www.example.com/",
       );
     });
@@ -298,6 +358,11 @@ describe("convertFetchDirectiveToString", () => {
       expect(convertFetchDirectiveToString({ scriptSrcAttr: ["'self'", "https://www.example.com/"] })).toBe(
         "script-src-attr 'self' https://www.example.com/",
       );
+
+      expect(convertFetchDirectiveToString({ "script-src-attr": "'self'" })).toBe("script-src-attr 'self'");
+      expect(convertFetchDirectiveToString({ "script-src-attr": ["'self'", "https://www.example.com/"] })).toBe(
+        "script-src-attr 'self' https://www.example.com/",
+      );
     });
   });
 
@@ -305,6 +370,11 @@ describe("convertFetchDirectiveToString", () => {
     it('should return value which includes "style-src"', () => {
       expect(convertFetchDirectiveToString({ styleSrc: "'self'" })).toBe("style-src 'self'");
       expect(convertFetchDirectiveToString({ styleSrc: ["'self'", "https://www.example.com/"] })).toBe(
+        "style-src 'self' https://www.example.com/",
+      );
+
+      expect(convertFetchDirectiveToString({ "style-src": "'self'" })).toBe("style-src 'self'");
+      expect(convertFetchDirectiveToString({ "style-src": ["'self'", "https://www.example.com/"] })).toBe(
         "style-src 'self' https://www.example.com/",
       );
     });
@@ -316,6 +386,11 @@ describe("convertFetchDirectiveToString", () => {
       expect(convertFetchDirectiveToString({ styleSrcElem: ["'self'", "https://www.example.com/"] })).toBe(
         "style-src-elem 'self' https://www.example.com/",
       );
+
+      expect(convertFetchDirectiveToString({ "style-src-elem": "'self'" })).toBe("style-src-elem 'self'");
+      expect(convertFetchDirectiveToString({ "style-src-elem": ["'self'", "https://www.example.com/"] })).toBe(
+        "style-src-elem 'self' https://www.example.com/",
+      );
     });
   });
 
@@ -323,6 +398,11 @@ describe("convertFetchDirectiveToString", () => {
     it('should return value which includes "style-src-attr"', () => {
       expect(convertFetchDirectiveToString({ styleSrcAttr: "'self'" })).toBe("style-src-attr 'self'");
       expect(convertFetchDirectiveToString({ styleSrcAttr: ["'self'", "https://www.example.com/"] })).toBe(
+        "style-src-attr 'self' https://www.example.com/",
+      );
+
+      expect(convertFetchDirectiveToString({ "style-src-attr": "'self'" })).toBe("style-src-attr 'self'");
+      expect(convertFetchDirectiveToString({ "style-src-attr": ["'self'", "https://www.example.com/"] })).toBe(
         "style-src-attr 'self' https://www.example.com/",
       );
     });
@@ -334,6 +414,11 @@ describe("convertFetchDirectiveToString", () => {
       expect(convertFetchDirectiveToString({ workerSrc: ["'self'", "https://www.example.com/"] })).toBe(
         "worker-src 'self' https://www.example.com/",
       );
+
+      expect(convertFetchDirectiveToString({ "worker-src": "'self'" })).toBe("worker-src 'self'");
+      expect(convertFetchDirectiveToString({ "worker-src": ["'self'", "https://www.example.com/"] })).toBe(
+        "worker-src 'self' https://www.example.com/",
+      );
     });
   });
 
@@ -342,12 +427,20 @@ describe("convertFetchDirectiveToString", () => {
       expect(convertFetchDirectiveToString({ childSrc: "'self'", styleSrc: "'self'", reportTo: "foobar" } as any)).toBe(
         "child-src 'self'; style-src 'self'",
       );
+
+      expect(
+        convertFetchDirectiveToString({ "child-src": "'self'", "style-src": "'self'", "report-to": "foobar" } as any),
+      ).toBe("child-src 'self'; style-src 'self'");
     });
   });
 
   context("when giving an object which has undefined", () => {
     it("should ignore the properties", () => {
       expect(convertFetchDirectiveToString({ childSrc: undefined, objectSrc: undefined, styleSrc: "'self'" })).toBe(
+        "style-src 'self'",
+      );
+
+      expect(convertFetchDirectiveToString({ "child-src": undefined, "object-src": undefined, "style-src": "'self'" })).toBe(
         "style-src 'self'",
       );
     });
@@ -360,6 +453,14 @@ describe("convertFetchDirectiveToString", () => {
           childSrc: "'self'",
           objectSrc: "https://example.com/",
           styleSrc: "'unsafe-inline'",
+        }),
+      ).toBe("child-src 'self'; object-src https://example.com/; style-src 'unsafe-inline'");
+
+      expect(
+        convertFetchDirectiveToString({
+          "child-src": "'self'",
+          "object-src": "https://example.com/",
+          "style-src": "'unsafe-inline'",
         }),
       ).toBe("child-src 'self'; object-src https://example.com/; style-src 'unsafe-inline'");
     });
@@ -385,6 +486,11 @@ describe("convertDocumentDirectiveToString", () => {
       expect(convertDocumentDirectiveToString({ baseURI: ["'self'", "https://www.example.com/"] })).toBe(
         "base-uri 'self' https://www.example.com/",
       );
+
+      expect(convertDocumentDirectiveToString({ "base-uri": "'self'" })).toBe("base-uri 'self'");
+      expect(convertDocumentDirectiveToString({ "base-uri": ["'self'", "https://www.example.com/"] })).toBe(
+        "base-uri 'self' https://www.example.com/",
+      );
     });
   });
 
@@ -392,6 +498,11 @@ describe("convertDocumentDirectiveToString", () => {
     it('should return value which includes "plugin-types"', () => {
       expect(convertDocumentDirectiveToString({ pluginTypes: "text/javascript" })).toBe("plugin-types text/javascript");
       expect(convertDocumentDirectiveToString({ pluginTypes: ["text/javascript", "image/png"] })).toBe(
+        "plugin-types text/javascript image/png",
+      );
+
+      expect(convertDocumentDirectiveToString({ "plugin-types": "text/javascript" })).toBe("plugin-types text/javascript");
+      expect(convertDocumentDirectiveToString({ "plugin-types": ["text/javascript", "image/png"] })).toBe(
         "plugin-types text/javascript image/png",
       );
     });
@@ -410,6 +521,14 @@ describe("convertDocumentDirectiveToString", () => {
         convertDocumentDirectiveToString({
           baseURI: "'self'",
           pluginTypes: ["text/javascript", "image/png"],
+          sandbox: true,
+        }),
+      ).toBe("base-uri 'self'; plugin-types text/javascript image/png; sandbox");
+
+      expect(
+        convertDocumentDirectiveToString({
+          "base-uri": "'self'",
+          "plugin-types": ["text/javascript", "image/png"],
           sandbox: true,
         }),
       ).toBe("base-uri 'self'; plugin-types text/javascript image/png; sandbox");
@@ -436,6 +555,11 @@ describe("convertReportingDirectiveToString", () => {
       expect(convertReportingDirectiveToString({ navigateTo: ["'self'", "https://example.com/"] })).toBe(
         "navigate-to 'self' https://example.com/",
       );
+
+      expect(convertReportingDirectiveToString({ "navigate-to": "'self'" })).toBe("navigate-to 'self'");
+      expect(convertReportingDirectiveToString({ "navigate-to": ["'self'", "https://example.com/"] })).toBe(
+        "navigate-to 'self' https://example.com/",
+      );
     });
   });
 
@@ -445,12 +569,21 @@ describe("convertReportingDirectiveToString", () => {
       expect(
         convertReportingDirectiveToString({ reportURI: ["https://example.com", new URL("https://www.example.com")] }),
       ).toBe("report-uri https://example.com/ https://www.example.com/");
+
+      expect(convertReportingDirectiveToString({ "report-uri": "https://example.com" })).toBe(
+        "report-uri https://example.com/",
+      );
+      expect(
+        convertReportingDirectiveToString({ "report-uri": ["https://example.com", new URL("https://www.example.com")] }),
+      ).toBe("report-uri https://example.com/ https://www.example.com/");
     });
   });
 
   context('when giving an object which has "reportTo" property', () => {
     it('should return value which includes "report-to"', () => {
       expect(convertReportingDirectiveToString({ reportTo: "endpoint-1" })).toBe("report-to endpoint-1");
+
+      expect(convertReportingDirectiveToString({ "report-to": "endpoint-1" })).toBe("report-to endpoint-1");
     });
   });
 
@@ -461,6 +594,14 @@ describe("convertReportingDirectiveToString", () => {
           navigateTo: "'self'",
           reportURI: new URL("https://example.com"),
           reportTo: "endpoint-1",
+        }),
+      ).toBe("navigate-to 'self'; report-uri https://example.com/; report-to endpoint-1");
+
+      expect(
+        convertReportingDirectiveToString({
+          "navigate-to": "'self'",
+          "report-uri": new URL("https://example.com"),
+          "report-to": "endpoint-1",
         }),
       ).toBe("navigate-to 'self'; report-uri https://example.com/; report-to endpoint-1");
     });
