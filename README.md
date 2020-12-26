@@ -26,7 +26,7 @@ module.exports = {
 
 <div align="center">
 <a href="https://www.npmjs.com/package/next-secure-headers"><img src="https://img.shields.io/npm/v/next-secure-headers.svg" alt="npm"></a>
-<a href="https://github.com/jagaapple/next-secure-headers/actions"><img src="https://github.com/jagaapple/next-secure-headers/workflows/Build%20and%20test/badge.svg" alt="GitHub Actions"></a>
+<a href="https://github.com/jagaapple/next-secure-headers/actions?query=workflow%3A%22Build+and+test%22"><img src="https://github.com/jagaapple/next-secure-headers/workflows/Build%20and%20test/badge.svg" alt="GitHub Actions"></a>
 <a href="https://codecov.io/gh/jagaapple/next-secure-headers"><img src="https://img.shields.io/codecov/c/github/jagaapple/next-secure-headers.svg"></a>
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/github/license/jagaapple/next-secure-headers.svg" alt="license"></a>
 <a href="https://twitter.com/jagaapple_tech"><img src="https://img.shields.io/badge/contact-%40jagaapple_tech-blue.svg" alt="@jagaapple_tech"></a>
@@ -149,6 +149,12 @@ One is to use `createSecureHeaders` in `next.config.js` , and another is to use 
 #### Use `createSecureHeaders` in `next.config.js` (RECOMMENDED)
 > ❗️ **Next.js 9.5 or higher is required.**
 > `headers` function has been supported since Next.js 9.5, so you have to use Next.js 9.5 or higher if you want to use this way.
+
+> 🤔 **For Next.js 10 and I18n routes.**
+> If your project uses Next.js 10 and built-in I18n routes, and you want to apply rules for all pages, you have to specify
+> `"/:path*"` to `source` property instead of `"/(.*)"` .
+> Conversely, if your project doesn't use I18n routes even if using Next.js 10, you have to specify `"/(.*)"` instead.
+> These limitations are maybe bugs in Next.js .
 
 This way uses `createSecureHeaders` function and [a built-in header configuration way by Next.js](https://nextjs.org/docs/api-reference/next.config.js/headers).
 This is not required any servers, can be used in static pages, and can retain [Automatic Static Optimization](https://nextjs.org/docs/advanced-features/automatic-static-optimization).
@@ -351,7 +357,7 @@ blocks many XSS attacks, but Content Security Policy is recommended to use compa
           & Partial<{
             navigateTo: string | string[];
             reportURI: string | URL | (string | URL)[];
-            reportTo: Record<string, any>;
+            reportTo: string;
           }>;
         reportOnly?: boolean;
       };
@@ -366,6 +372,8 @@ This is to set "Content-Security-Policy" or "Content-Security-Policy-Report-Only
 non-allowed resources.
 
 If you give true to `reportOnly` , this sets "Content-Security-Policy-Report-Only" to value instead of "Content-Security-Policy".
+
+Also you can specify directives using chain-case names such as `child-src` instead of `childSrc` .
 
 ### `expectCT`
 ```ts

@@ -10,6 +10,9 @@
   "editor.rulers": [
     128
   ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
 
 
   // ---------------------------------------------------------------------------------------------------------------------------
@@ -29,22 +32,25 @@
     "lib/**": true
   },
 
-  // Specifies the folder path containing the tsserver and lib*.d.ts files to use.
-  "typescript.tsdk": "node_modules/typescript/lib",
-
 
   // ---------------------------------------------------------------------------------------------------------------------------
   // Extensions
   // ---------------------------------------------------------------------------------------------------------------------------
   // ESLint
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
 
 
   // ---------------------------------------------------------------------------------------------------------------------------
   // Language Setings
   // ---------------------------------------------------------------------------------------------------------------------------
+  // Specifies the folder path containing the tsserver and lib*.d.ts files to use.
+  "typescript.tsdk": "./node_modules/typescript/lib",
+
   "[javascript]": {
     "editor.formatOnSave": true
   },
