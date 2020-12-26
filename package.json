@@ -22,8 +22,6 @@
     "README.md"
   ],
   "main": "lib/index.js",
-  "bin": "",
-  "man": "",
   "repository": {
     "type": "git",
     "url": "https://github.com/jagaapple/next-secure-headers.git"
