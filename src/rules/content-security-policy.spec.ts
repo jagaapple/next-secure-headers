@@ -337,6 +337,14 @@ describe("convertFetchDirectiveToString", () => {
     });
   });
 
+  context("when giving an object which has dummy directives", () => {
+    it("should ignore them", () => {
+      expect(convertFetchDirectiveToString({ childSrc: "'self'", styleSrc: "'self'", reportTo: "foobar" } as any)).toBe(
+        "child-src 'self'; style-src 'self'",
+      );
+    });
+  });
+
   context("when giving an object which has undefined", () => {
     it("should ignore the properties", () => {
       expect(convertFetchDirectiveToString({ childSrc: undefined, objectSrc: undefined, styleSrc: "'self'" })).toBe(

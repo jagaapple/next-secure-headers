@@ -94,6 +94,8 @@ export const convertFetchDirectiveToString = (directive?: Partial<FetchDirective
     if (value == undefined) return;
 
     const directiveName = fetchDirectiveNamesByKey[key as keyof FetchDirective];
+    if (directiveName == undefined) return;
+
     strings.push(createDirectiveValue(directiveName, wrapArray(value)));
   });
 
