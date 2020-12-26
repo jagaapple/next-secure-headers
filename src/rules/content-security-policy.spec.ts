@@ -442,16 +442,7 @@ describe("convertReportingDirectiveToString", () => {
 
   context('when giving an object which has "reportTo" property', () => {
     it('should return value which includes "report-to"', () => {
-      expect(convertReportingDirectiveToString({ reportTo: { foo: { bar: 123 } } })).toBe('report-to {"foo":{"bar":123}}');
-    });
-
-    it('should call "JSON.stinrigfy" function', () => {
-      const jsonStringifySpy = jest.spyOn(JSON, "stringify");
-
-      const value = { foo: { bar: 123 } };
-      convertReportingDirectiveToString({ reportTo: value });
-
-      expect(jsonStringifySpy).toBeCalledWith(value);
+      expect(convertReportingDirectiveToString({ reportTo: "endpoint-1" })).toBe("report-to endpoint-1");
     });
   });
 
@@ -461,9 +452,9 @@ describe("convertReportingDirectiveToString", () => {
         convertReportingDirectiveToString({
           navigateTo: "'self'",
           reportURI: new URL("https://example.com"),
-          reportTo: { foo: { bar: 123 } },
+          reportTo: "endpoint-1",
         }),
-      ).toBe('navigate-to \'self\'; report-uri https://example.com/; report-to {"foo":{"bar":123}}');
+      ).toBe("navigate-to 'self'; report-uri https://example.com/; report-to endpoint-1");
     });
   });
 });

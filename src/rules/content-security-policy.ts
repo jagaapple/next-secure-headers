@@ -46,7 +46,7 @@ type DocumentDirective = {
 type ReportingDirective = {
   navigateTo: DirectiveSource;
   reportURI: string | URL | (string | URL)[];
-  reportTo: Record<string, any>;
+  reportTo: string;
 };
 
 export type ContentSecurityPolicyOption =
@@ -126,7 +126,7 @@ export const convertReportingDirectiveToString = (directive?: Partial<ReportingD
     const reportURI = wrapArray(directive.reportURI).map(encodeStrictURI);
     strings.push(createDirectiveValue("report-uri", reportURI));
   }
-  if (directive.reportTo != undefined) strings.push(createDirectiveValue("report-to", JSON.stringify(directive.reportTo)));
+  if (directive.reportTo != undefined) strings.push(createDirectiveValue("report-to", directive.reportTo));
 
   return strings.join(directiveValueSepartor);
 };
