@@ -357,7 +357,7 @@ blocks many XSS attacks, but Content Security Policy is recommended to use compa
           & Partial<{
             navigateTo: string | string[];
             reportURI: string | URL | (string | URL)[];
-            reportTo: Record<string, any>;
+            reportTo: string;
           }>;
         reportOnly?: boolean;
       };
