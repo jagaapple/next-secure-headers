@@ -21,32 +21,54 @@ type Sandbox =
 
 type FetchDirective = {
   childSrc: DirectiveSource;
+  "child-src": DirectiveSource;
   connectSrc: DirectiveSource;
+  "connect-src": DirectiveSource;
   defaultSrc: DirectiveSource;
+  "default-src": DirectiveSource;
   fontSrc: DirectiveSource;
+  "font-src": DirectiveSource;
   frameSrc: DirectiveSource;
+  "frame-src": DirectiveSource;
   imgSrc: DirectiveSource;
+  "img-src": DirectiveSource;
   manifestSrc: DirectiveSource;
+  "manifest-src": DirectiveSource;
   mediaSrc: DirectiveSource;
+  "media-src": DirectiveSource;
   prefetchSrc: DirectiveSource;
+  "prefetch-src": DirectiveSource;
   objectSrc: DirectiveSource;
+  "object-src": DirectiveSource;
   scriptSrc: DirectiveSource;
+  "script-src": DirectiveSource;
   scriptSrcElem: DirectiveSource;
+  "script-src-elem": DirectiveSource;
   scriptSrcAttr: DirectiveSource;
+  "script-src-attr": DirectiveSource;
   styleSrc: DirectiveSource;
+  "style-src": DirectiveSource;
   styleSrcElem: DirectiveSource;
+  "style-src-elem": DirectiveSource;
   styleSrcAttr: DirectiveSource;
+  "style-src-attr": DirectiveSource;
   workerSrc: DirectiveSource;
+  "worker-src": DirectiveSource;
 };
 type DocumentDirective = {
   baseURI: DirectiveSource;
+  "base-uri": DirectiveSource;
   pluginTypes: PluginTypes;
+  "plugin-types": PluginTypes;
   sandbox: Sandbox;
 };
 type ReportingDirective = {
   navigateTo: DirectiveSource;
+  "navigate-to": DirectiveSource;
   reportURI: string | URL | (string | URL)[];
+  "report-uri": string | URL | (string | URL)[];
   reportTo: string;
+  "report-to": string;
 };
 
 export type ContentSecurityPolicyOption =
@@ -69,22 +91,39 @@ export const createDirectiveValue = <T>(directiveName: string, value: T | T[], a
 
 const fetchDirectiveNamesByKey: Record<keyof FetchDirective, string> = {
   childSrc: "child-src",
+  "child-src": "child-src",
   connectSrc: "connect-src",
+  "connect-src": "connect-src",
   defaultSrc: "default-src",
+  "default-src": "default-src",
   fontSrc: "font-src",
+  "font-src": "font-src",
   frameSrc: "frame-src",
+  "frame-src": "frame-src",
   imgSrc: "img-src",
+  "img-src": "img-src",
   manifestSrc: "manifest-src",
+  "manifest-src": "manifest-src",
   mediaSrc: "media-src",
+  "media-src": "media-src",
   prefetchSrc: "prefetch-src",
+  "prefetch-src": "prefetch-src",
   objectSrc: "object-src",
+  "object-src": "object-src",
   scriptSrc: "script-src",
+  "script-src": "script-src",
   scriptSrcElem: "script-src-elem",
+  "script-src-elem": "script-src-elem",
   scriptSrcAttr: "script-src-attr",
+  "script-src-attr": "script-src-attr",
   styleSrc: "style-src",
+  "style-src": "style-src",
   styleSrcElem: "style-src-elem",
+  "style-src-elem": "style-src-elem",
   styleSrcAttr: "style-src-attr",
+  "style-src-attr": "style-src-attr",
   workerSrc: "worker-src",
+  "worker-src": "worker-src",
 };
 export const convertFetchDirectiveToString = (directive?: Partial<FetchDirective>) => {
   if (directive == undefined) return "";
@@ -107,8 +146,12 @@ export const convertDocumentDirectiveToString = (directive?: Partial<DocumentDir
 
   const strings: string[] = [];
 
-  if (directive.baseURI != undefined) strings.push(createDirectiveValue("base-uri", wrapArray(directive.baseURI)));
-  if (directive.pluginTypes != undefined) strings.push(createDirectiveValue("plugin-types", wrapArray(directive.pluginTypes)));
+  const baseURI = directive.baseURI ?? directive["base-uri"];
+  if (baseURI != undefined) strings.push(createDirectiveValue("base-uri", wrapArray(baseURI)));
+
+  const pluginTypes = directive.pluginTypes ?? directive["plugin-types"];
+  if (pluginTypes != undefined) strings.push(createDirectiveValue("plugin-types", wrapArray(pluginTypes)));
+
   if (directive.sandbox != undefined) {
     const directiveName = "sandbox";
     const value = directive.sandbox === true ? directiveName : createDirectiveValue(directiveName, directive.sandbox);
@@ -123,12 +166,16 @@ export const convertReportingDirectiveToString = (directive?: Partial<ReportingD
 
   const strings: string[] = [];
 
-  if (directive.navigateTo != undefined) strings.push(createDirectiveValue("navigate-to", wrapArray(directive.navigateTo)));
-  if (directive.reportURI != undefined) {
-    const reportURI = wrapArray(directive.reportURI).map(encodeStrictURI);
+  const navigateTo = directive.navigateTo ?? directive["navigate-to"];
+  if (navigateTo != undefined) strings.push(createDirectiveValue("navigate-to", wrapArray(navigateTo)));
+
+  const reportURIValue = directive.reportURI ?? directive["report-uri"];
+  if (reportURIValue != undefined) {
+    const reportURI = wrapArray(reportURIValue).map(encodeStrictURI);
     strings.push(createDirectiveValue("report-uri", reportURI));
   }
-  if (directive.reportTo != undefined) strings.push(createDirectiveValue("report-to", directive.reportTo));
+  const reportTo = directive.reportTo ?? directive["report-to"];
+  if (reportTo != undefined) strings.push(createDirectiveValue("report-to", reportTo));
 
   return strings.join(directiveValueSepartor);
 };
