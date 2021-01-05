@@ -2,6 +2,7 @@ import { wrapArray } from "./shared";
 import {
   convertDocumentDirectiveToString,
   convertFetchDirectiveToString,
+  convertNavigationDirectiveToString,
   convertReportingDirectiveToString,
   createContentSecurityPolicyHeader,
   createContentSecurityPolicyOptionHeaderValue,
@@ -82,6 +83,10 @@ describe("createContentSecurityPolicyOptionHeaderValue", () => {
       ReturnType<typeof convertDocumentDirectiveToString>,
       Parameters<typeof convertDocumentDirectiveToString>
     >;
+    let navigationDirectiveToStringConverterMock: jest.Mock<
+      ReturnType<typeof convertNavigationDirectiveToString>,
+      Parameters<typeof convertNavigationDirectiveToString>
+    >;
     let reportingDirectiveToStringConverterMock: jest.Mock<
       ReturnType<typeof convertReportingDirectiveToString>,
       Parameters<typeof convertReportingDirectiveToString>
@@ -90,6 +95,7 @@ describe("createContentSecurityPolicyOptionHeaderValue", () => {
     beforeEach(() => {
       fetchDirectiveToStringConverterMock = jest.fn(convertFetchDirectiveToString);
       documentDirectiveToStringConverterMock = jest.fn(convertDocumentDirectiveToString);
+      navigationDirectiveToStringConverterMock = jest.fn(convertNavigationDirectiveToString);
       reportingDirectiveToStringConverterMock = jest.fn(convertReportingDirectiveToString);
     });
 
@@ -106,7 +112,19 @@ describe("createContentSecurityPolicyOptionHeaderValue", () => {
     });
 
     it("should call the fourth argument with directives", () => {
-      createContentSecurityPolicyOptionHeaderValue(dummyOption, undefined, undefined, reportingDirectiveToStringConverterMock);
+      createContentSecurityPolicyOptionHeaderValue(dummyOption, undefined, undefined, navigationDirectiveToStringConverterMock);
+
+      expect(navigationDirectiveToStringConverterMock).toBeCalledWith(dummyOption.directives);
+    });
+
+    it("should call the fifth argument with directives", () => {
+      createContentSecurityPolicyOptionHeaderValue(
+        dummyOption,
+        undefined,
+        undefined,
+        undefined,
+        reportingDirectiveToStringConverterMock,
+      );
 
       expect(reportingDirectiveToStringConverterMock).toBeCalledWith(dummyOption.directives);
     });
@@ -114,6 +132,7 @@ describe("createContentSecurityPolicyOptionHeaderValue", () => {
     it('should join directive strings using "; "', () => {
       fetchDirectiveToStringConverterMock.mockReturnValue("dummy-value-1");
       documentDirectiveToStringConverterMock.mockReturnValue("");
+      navigationDirectiveToStringConverterMock.mockReturnValue("dummy-value-4");
       reportingDirectiveToStringConverterMock.mockReturnValue("dummy-value-3");
 
       expect(
@@ -121,9 +140,10 @@ describe("createContentSecurityPolicyOptionHeaderValue", () => {
           dummyOption,
           fetchDirectiveToStringConverterMock,
           documentDirectiveToStringConverterMock,
+          navigationDirectiveToStringConverterMock,
           reportingDirectiveToStringConverterMock,
         ),
-      ).toBe("dummy-value-1; dummy-value-3");
+      ).toBe("dummy-value-1; dummy-value-4; dummy-value-3");
     });
   });
 });
@@ -549,20 +569,6 @@ describe("convertReportingDirectiveToString", () => {
     });
   });
 
-  context('when giving an object which has "navigateTo" property', () => {
-    it('should return value which includes "navigate-to"', () => {
-      expect(convertReportingDirectiveToString({ navigateTo: "'self'" })).toBe("navigate-to 'self'");
-      expect(convertReportingDirectiveToString({ navigateTo: ["'self'", "https://example.com/"] })).toBe(
-        "navigate-to 'self' https://example.com/",
-      );
-
-      expect(convertReportingDirectiveToString({ "navigate-to": "'self'" })).toBe("navigate-to 'self'");
-      expect(convertReportingDirectiveToString({ "navigate-to": ["'self'", "https://example.com/"] })).toBe(
-        "navigate-to 'self' https://example.com/",
-      );
-    });
-  });
-
   context('when giving an object which has "reportURI" property', () => {
     it('should return value which includes "report-uri"', () => {
       expect(convertReportingDirectiveToString({ reportURI: "https://example.com" })).toBe("report-uri https://example.com/");
@@ -591,19 +597,78 @@ describe("convertReportingDirectiveToString", () => {
     it('should return value which includes their directive names joined "; "', () => {
       expect(
         convertReportingDirectiveToString({
-          navigateTo: "'self'",
           reportURI: new URL("https://example.com"),
           reportTo: "endpoint-1",
         }),
-      ).toBe("navigate-to 'self'; report-uri https://example.com/; report-to endpoint-1");
+      ).toBe("report-uri https://example.com/; report-to endpoint-1");
 
       expect(
         convertReportingDirectiveToString({
-          "navigate-to": "'self'",
           "report-uri": new URL("https://example.com"),
           "report-to": "endpoint-1",
         }),
-      ).toBe("navigate-to 'self'; report-uri https://example.com/; report-to endpoint-1");
+      ).toBe("report-uri https://example.com/; report-to endpoint-1");
+    });
+  });
+});
+
+describe("convertNavigationDirectiveToString", () => {
+  context("when giving undefined", () => {
+    it("should return an empty string", () => {
+      expect(convertNavigationDirectiveToString()).toBe("");
+    });
+  });
+
+  context("when giving an empty object", () => {
+    it("should return an empty string", () => {
+      expect(convertNavigationDirectiveToString({})).toBe("");
+    });
+  });
+
+  context('when giving an object which has "formAction" property', () => {
+    it('should return value which includes "form-action"', () => {
+      expect(convertNavigationDirectiveToString({ formAction: "'self'" })).toBe("form-action 'self'");
+      expect(convertNavigationDirectiveToString({ formAction: ["'self'", "https://example.com"] })).toBe(
+        "form-action 'self' https://example.com",
+      );
+    });
+  });
+
+  context('when giving an object which has "frameAncestors" property', () => {
+    it('should return value which includes "frame-ancestors"', () => {
+      expect(convertNavigationDirectiveToString({ frameAncestors: "'self'" })).toBe("frame-ancestors 'self'");
+      expect(convertNavigationDirectiveToString({ frameAncestors: ["'self'", "https://example.com"] })).toBe(
+        "frame-ancestors 'self' https://example.com",
+      );
+    });
+  });
+
+  context('when giving an object which has "navigateTo" property', () => {
+    it('should return value which includes "navigate-to"', () => {
+      expect(convertNavigationDirectiveToString({ navigateTo: "'self'" })).toBe("navigate-to 'self'");
+      expect(convertNavigationDirectiveToString({ navigateTo: ["'self'", "https://example.com"] })).toBe(
+        "navigate-to 'self' https://example.com",
+      );
+    });
+  });
+
+  context("when giving an object which has one or more properties", () => {
+    it('should return value which includes their directive names joined "; "', () => {
+      expect(
+        convertNavigationDirectiveToString({
+          formAction: "'self'",
+          frameAncestors: ["'self'", "https://example.com"],
+          navigateTo: "'self'",
+        }),
+      ).toBe("form-action 'self'; frame-ancestors 'self' https://example.com; navigate-to 'self'");
+
+      expect(
+        convertNavigationDirectiveToString({
+          "form-action": "'self'",
+          "frame-ancestors": ["'self'", "https://example.com"],
+          "navigate-to": "'self'",
+        }),
+      ).toBe("form-action 'self'; frame-ancestors 'self' https://example.com; navigate-to 'self'");
     });
   });
 });
