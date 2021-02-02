@@ -5,6 +5,7 @@ import { rules } from "./rules";
 import type {
   ContentSecurityPolicyOption,
   ExpectCTOption,
+  FeaturePolicyOptions,
   ForceHTTPSRedirectOption,
   FrameGuardOption,
   NoopenOption,
@@ -25,6 +26,11 @@ type Options = Partial<{
    * This is to set "Expect-CT" header and it's to tell browsers to expect Certificate Transparency.
    */
   expectCT: ExpectCTOption;
+  /**
+   * This is to set "Feature-Policy" header and it provides a mechanism to allow and deny the use of browser features in its
+   * own frame, and in content within any <iframe> elements in the document.
+   */
+  featurePolicy: FeaturePolicyOptions;
   /**
    * This is to set "Strict-Transport-Security (HSTS)" header and it's to prevent man-in-the-middle attacks during redirects from HTTP to HTTPS.
    * To enable this is highly recommended if you use HTTPS (SSL) on your servers.
@@ -69,6 +75,7 @@ export const createHeadersObject = (options: Options = {}) => {
   [
     rules.createContentSecurityPolicyHeader(options.contentSecurityPolicy),
     rules.createExpectCTHeader(options.expectCT),
+    rules.createFeaturePolicyHeader(options.featurePolicy),
     rules.createForceHTTPSRedirectHeader(options.forceHTTPSRedirect),
     rules.createFrameGuardHeader(options.frameGuard),
     rules.createNoopenHeader(options.noopen),
