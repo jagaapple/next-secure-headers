@@ -12,6 +12,10 @@ describe("createHeadersObject", () => {
     ReturnType<typeof rules.createExpectCTHeader>,
     Parameters<typeof rules.createExpectCTHeader>
   >;
+  let featurePolicyHeaderCreatorSpy: jest.SpyInstance<
+    ReturnType<typeof rules.createFeaturePolicyHeader>,
+    Parameters<typeof rules.createFeaturePolicyHeader>
+  >;
   let forceHTTPSRedirectHeaderCreatorSpy: jest.SpyInstance<
     ReturnType<typeof rules.createForceHTTPSRedirectHeader>,
     Parameters<typeof rules.createForceHTTPSRedirectHeader>
@@ -41,6 +45,7 @@ describe("createHeadersObject", () => {
     beforeEach(() => {
       contentSecurityPolicyHeaderCreatorSpy = jest.spyOn(rules, "createContentSecurityPolicyHeader");
       expectCTHeaderCreatorSpy = jest.spyOn(rules, "createExpectCTHeader");
+      featurePolicyHeaderCreatorSpy = jest.spyOn(rules, "createFeaturePolicyHeader");
       forceHTTPSRedirectHeaderCreatorSpy = jest.spyOn(rules, "createForceHTTPSRedirectHeader");
       frameGuardHeaderCreatorSpy = jest.spyOn(rules, "createFrameGuardHeader");
       noopenHeaderCreatorSpy = jest.spyOn(rules, "createNoopenHeader");
@@ -53,6 +58,7 @@ describe("createHeadersObject", () => {
       const dummyOptions: Parameters<typeof createHeadersObject>[0] = {
         contentSecurityPolicy: { directives: { scriptSrc: "'self'" } },
         expectCT: [true, { maxAge: 123, enforce: true, reportURI: "https://example.example.com" }],
+        featurePolicy: { autoplay: { none: true }, battery: { all: true }, vr: { self: true, origins: ["test.com"] } },
         forceHTTPSRedirect: [true, { maxAge: 123, preload: true }],
         frameGuard: ["allow-from", { uri: "https://example.example.com" }],
         noopen: false,
@@ -63,6 +69,7 @@ describe("createHeadersObject", () => {
 
       expect(contentSecurityPolicyHeaderCreatorSpy).toBeCalledWith(dummyOptions.contentSecurityPolicy);
       expect(expectCTHeaderCreatorSpy).toBeCalledWith(dummyOptions.expectCT);
+      expect(featurePolicyHeaderCreatorSpy).toBeCalledWith(dummyOptions.featurePolicy);
       expect(forceHTTPSRedirectHeaderCreatorSpy).toBeCalledWith(dummyOptions.forceHTTPSRedirect);
       expect(frameGuardHeaderCreatorSpy).toBeCalledWith(dummyOptions.frameGuard);
       expect(noopenHeaderCreatorSpy).toBeCalledWith(dummyOptions.noopen);
@@ -87,6 +94,9 @@ describe("createHeadersObject", () => {
       xssProtectionHeaderCreatorSpy = jest
         .spyOn(rules, "createXSSProtectionHeader")
         .mockReturnValue({ name: "dummy-3", value: undefined });
+      featurePolicyHeaderCreatorSpy = jest
+        .spyOn(rules, "createFeaturePolicyHeader")
+        .mockReturnValue({ name: "dummy-5", value: undefined });
     });
 
     it("should omit headers which have undefined value", () => {
@@ -117,7 +127,10 @@ describe("createSecureHeaders", () => {
       { key: "X-Content-Type-Options", value: "nosniff" },
       { key: "X-XSS-Protection", value: "1" },
     ]);
-    expect(createSecureHeaders({ frameGuard: "sameorigin", referrerPolicy: "same-origin" })).toEqual([
+    expect(
+      createSecureHeaders({ frameGuard: "sameorigin", referrerPolicy: "same-origin", featurePolicy: { vr: { none: true } } }),
+    ).toEqual([
+      { key: "Feature-Policy", value: "vr 'none';" },
       { key: "Strict-Transport-Security", value: "max-age=63072000" },
       { key: "X-Frame-Options", value: "sameorigin" },
       { key: "X-Download-Options", value: "noopen" },
