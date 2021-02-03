@@ -1,5 +1,6 @@
 import { createContentSecurityPolicyHeader } from "./content-security-policy";
 import { createExpectCTHeader } from "./expect-ct";
+import { createFeaturePolicyHeader } from "./feature-policy";
 import { createForceHTTPSRedirectHeader } from "./force-https-redirect";
 import { createFrameGuardHeader } from "./frame-guard";
 import { createNoopenHeader } from "./noopen";
@@ -9,6 +10,7 @@ import { createXSSProtectionHeader } from "./xss-protection";
 
 export type { ContentSecurityPolicyOption } from "./content-security-policy";
 export type { ExpectCTOption } from "./expect-ct";
+export type { FeaturePolicyOptions } from "./feature-policy";
 export type { ForceHTTPSRedirectOption } from "./force-https-redirect";
 export type { FrameGuardOption } from "./frame-guard";
 export type { NoopenOption } from "./noopen";
@@ -21,6 +23,7 @@ export type { XSSProtectionOption } from "./xss-protection";
 export const rules = {
   createContentSecurityPolicyHeader,
   createExpectCTHeader,
+  createFeaturePolicyHeader,
   createForceHTTPSRedirectHeader,
   createFrameGuardHeader,
   createNoopenHeader,
