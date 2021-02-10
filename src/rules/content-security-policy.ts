@@ -28,6 +28,8 @@ type FetchDirective = {
   "default-src": DirectiveSource;
   fontSrc: DirectiveSource;
   "font-src": DirectiveSource;
+  frameAncestors: DirectiveSource;
+  "frame-ancestors": DirectiveSource;
   frameSrc: DirectiveSource;
   "frame-src": DirectiveSource;
   imgSrc: DirectiveSource;
@@ -98,6 +100,8 @@ const fetchDirectiveNamesByKey: Record<keyof FetchDirective, string> = {
   "default-src": "default-src",
   fontSrc: "font-src",
   "font-src": "font-src",
+  frameAncestors: "frame-ancestors",
+  "frame-ancestors": "frame-ancestors",
   frameSrc: "frame-src",
   "frame-src": "frame-src",
   imgSrc: "img-src",

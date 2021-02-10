@@ -254,6 +254,20 @@ describe("convertFetchDirectiveToString", () => {
     });
   });
 
+  context('when giving an object which has "frameAncestors" property', () => {
+    it('should return value which includes "frame-ancestors"', () => {
+      expect(convertFetchDirectiveToString({ frameAncestors: "'self'" })).toBe("frame-ancestors 'self'");
+      expect(convertFetchDirectiveToString({ frameAncestors: ["'self'", "https://www.example.com/"] })).toBe(
+        "frame-ancestors 'self' https://www.example.com/",
+      );
+
+      expect(convertFetchDirectiveToString({ "frame-ancestors": "'self'" })).toBe("frame-ancestors 'self'");
+      expect(convertFetchDirectiveToString({ "frame-ancestors": ["'self'", "https://www.example.com/"] })).toBe(
+        "frame-ancestors 'self' https://www.example.com/",
+      );
+    });
+  });
+
   context('when giving an object which has "imgSrc" property', () => {
     it('should return value which includes "img-src"', () => {
       expect(convertFetchDirectiveToString({ imgSrc: "'self'" })).toBe("img-src 'self'");
