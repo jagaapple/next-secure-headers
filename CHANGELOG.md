@@ -1,4 +1,12 @@
 # Changelog
+## 2.2.0 (2021-02-25)
+- Add navigation directives #41 - [@naotone](https://github.com/naotone)
+  - Support `form-action` `frame-ancestors` directives
+  - Move to `navigation-to` directive from ReportingDirective to NavigationDirective
+- Add about frame-ancestors CSP directive to readme #46 - [@mattdell](https://github.com/mattdell)
+- Improve development environment
+  - Update dependencies - [@jagaapple](https://github.com/jagaapple)
+
 ## 2.1.0 (2020-12-27)
 - Add support for Node.js 14 #36 - [@jagaapple](https://github.com/jagaapple)
 - Add support for chain-case directive styles to CSP #40 - [@jagaapple](https://github.com/jagaapple)
