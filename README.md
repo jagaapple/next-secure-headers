@@ -321,7 +321,6 @@ blocks many XSS attacks, but Content Security Policy is recommended to use compa
             connectSrc: string | string[];
             defaultSrc: string | string[];
             fontSrc: string | string[];
-            frameAncestors: string | string[];
             frameSrc: string | string[];
             imgSrc: string | string[];
             manifestSrc: string | string[];
