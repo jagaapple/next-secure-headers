@@ -355,6 +355,8 @@ blocks many XSS attacks, but Content Security Policy is recommended to use compa
               | "allow-top-navigation-by-user-activation";
           }>
           & Partial<{
+            formAction: string | string[];
+            frameAncestors: string | string[];
             navigateTo: string | string[];
             reportURI: string | URL | (string | URL)[];
             reportTo: string;
@@ -374,6 +376,11 @@ non-allowed resources.
 If you give true to `reportOnly` , this sets "Content-Security-Policy-Report-Only" to value instead of "Content-Security-Policy".
 
 Also you can specify directives using chain-case names such as `child-src` instead of `childSrc` .
+
+> **❗️ When setting `frameAncestors` :X-Frame-Options takes priority.**
+> [Section "Relation to X-Frame-Options" of the CSP Spec](https://w3c.github.io/webappsec-csp/#frame-ancestors-and-frame-options) says: _"If a resource is delivered with a policy that includes a directive named frame-ancestors and whose disposition is "enforce", then the X-Frame-Options header MUST be ignored"_, but Chrome 40 & Firefox 35 ignore the frame-ancestors directive and follow the X-Frame-Options header instead.
+> 
+> Therefore, if setting `frameAncestors` you should set `frameGuard` to `false`.
 
 ### `expectCT`
 ```ts
