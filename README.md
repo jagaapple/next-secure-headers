@@ -101,7 +101,7 @@ was born. next-secure-headers is built for Next.js project so that you can speci
 components.
 
 #### next-secure-headers vs Helmet
-The following are rules next-secure-headers has and Helmet has. next-secure-headers is inspired by Helmet, but it don't have
+The following are rules next-secure-headers has and Helmet has. next-secure-headers is inspired by Helmet, but it doesn't have
 some rules for some reason.
 
 |                                   | next-secure-headers     | Helmet                  | Comment                                                                                           |
