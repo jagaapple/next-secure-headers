@@ -62,9 +62,15 @@ type DocumentDirective = {
   "plugin-types": PluginTypes;
   sandbox: Sandbox;
 };
-type ReportingDirective = {
+type NavigationDirective = {
+  formAction: DirectiveSource;
+  "form-action": DirectiveSource;
+  frameAncestors: DirectiveSource;
+  "frame-ancestors": DirectiveSource;
   navigateTo: DirectiveSource;
   "navigate-to": DirectiveSource;
+};
+type ReportingDirective = {
   reportURI: string | URL | (string | URL)[];
   "report-uri": string | URL | (string | URL)[];
   reportTo: string;
@@ -74,7 +80,10 @@ type ReportingDirective = {
 export type ContentSecurityPolicyOption =
   | false
   | {
-      directives: Partial<FetchDirective> & Partial<DocumentDirective> & Partial<ReportingDirective>;
+      directives: Partial<FetchDirective> &
+        Partial<DocumentDirective> &
+        Partial<NavigationDirective> &
+        Partial<ReportingDirective>;
       reportOnly?: boolean;
     };
 
@@ -161,13 +170,27 @@ export const convertDocumentDirectiveToString = (directive?: Partial<DocumentDir
   return strings.join(directiveValueSepartor);
 };
 
-export const convertReportingDirectiveToString = (directive?: Partial<ReportingDirective>) => {
+export const convertNavigationDirectiveToString = (directive?: Partial<NavigationDirective>) => {
   if (directive == undefined) return "";
 
   const strings: string[] = [];
 
+  const formAction = directive.formAction ?? directive["form-action"];
+  if (formAction != undefined) strings.push(createDirectiveValue("form-action", wrapArray(formAction)));
+
+  const frameAncestors = directive.frameAncestors ?? directive["frame-ancestors"];
+  if (frameAncestors != undefined) strings.push(createDirectiveValue("frame-ancestors", wrapArray(frameAncestors)));
+
   const navigateTo = directive.navigateTo ?? directive["navigate-to"];
   if (navigateTo != undefined) strings.push(createDirectiveValue("navigate-to", wrapArray(navigateTo)));
+
+  return strings.join(directiveValueSepartor);
+};
+
+export const convertReportingDirectiveToString = (directive?: Partial<ReportingDirective>) => {
+  if (directive == undefined) return "";
+
+  const strings: string[] = [];
 
   const reportURIValue = directive.reportURI ?? directive["report-uri"];
   if (reportURIValue != undefined) {
@@ -184,6 +207,7 @@ export const createContentSecurityPolicyOptionHeaderValue = (
   option?: ContentSecurityPolicyOption,
   fetchDirectiveToStringConverter = convertFetchDirectiveToString,
   documentDirectiveToStringConverter = convertDocumentDirectiveToString,
+  navigationDirectiveToStringConverter = convertNavigationDirectiveToString,
   reportingDirectiveToStringConverter = convertReportingDirectiveToString,
 ): string | undefined => {
   if (option == undefined) return;
@@ -192,6 +216,7 @@ export const createContentSecurityPolicyOptionHeaderValue = (
   return [
     fetchDirectiveToStringConverter(option.directives),
     documentDirectiveToStringConverter(option.directives),
+    navigationDirectiveToStringConverter(option.directives),
     reportingDirectiveToStringConverter(option.directives),
   ]
     .filter((string) => string.length > 0)
