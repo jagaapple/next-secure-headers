@@ -76,6 +76,10 @@ type ReportingDirective = {
   reportTo: string;
   "report-to": string;
 };
+type OtherDirective = {
+  upgradeInsecureRequests: boolean;
+  "upgrade-insecure-requests": boolean;
+};
 
 export type ContentSecurityPolicyOption =
   | false
@@ -83,7 +87,8 @@ export type ContentSecurityPolicyOption =
       directives: Partial<FetchDirective> &
         Partial<DocumentDirective> &
         Partial<NavigationDirective> &
-        Partial<ReportingDirective>;
+        Partial<ReportingDirective> &
+        Partial<OtherDirective>;
       reportOnly?: boolean;
     };
 
@@ -203,12 +208,24 @@ export const convertReportingDirectiveToString = (directive?: Partial<ReportingD
   return strings.join(directiveValueSepartor);
 };
 
+export const convertOtherDirectiveToString = (directive?: Partial<OtherDirective>) => {
+  if (directive == undefined) return "";
+
+  const strings: string[] = [];
+
+  const upgradeInsecureRequests = directive.upgradeInsecureRequests ?? directive["upgrade-insecure-requests"];
+  if (upgradeInsecureRequests) strings.push(createDirectiveValue("upgrade-insecure-requests", []));
+
+  return strings.join(directiveValueSepartor);
+};
+
 export const createContentSecurityPolicyOptionHeaderValue = (
   option?: ContentSecurityPolicyOption,
   fetchDirectiveToStringConverter = convertFetchDirectiveToString,
   documentDirectiveToStringConverter = convertDocumentDirectiveToString,
   navigationDirectiveToStringConverter = convertNavigationDirectiveToString,
   reportingDirectiveToStringConverter = convertReportingDirectiveToString,
+  othersDirectiveToStringConverter = convertOtherDirectiveToString,
 ): string | undefined => {
   if (option == undefined) return;
   if (option === false) return;
@@ -218,6 +235,7 @@ export const createContentSecurityPolicyOptionHeaderValue = (
     documentDirectiveToStringConverter(option.directives),
     navigationDirectiveToStringConverter(option.directives),
     reportingDirectiveToStringConverter(option.directives),
+    othersDirectiveToStringConverter(option.directives),
   ]
     .filter((string) => string.length > 0)
     .join(directiveValueSepartor);
