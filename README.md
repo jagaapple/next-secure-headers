@@ -379,7 +379,7 @@ Also you can specify directives using chain-case names such as `child-src` inste
 
 > **❗️ When setting `frameAncestors` :X-Frame-Options takes priority.**
 > [Section "Relation to X-Frame-Options" of the CSP Spec](https://w3c.github.io/webappsec-csp/#frame-ancestors-and-frame-options) says: _"If a resource is delivered with a policy that includes a directive named frame-ancestors and whose disposition is "enforce", then the X-Frame-Options header MUST be ignored"_, but Chrome 40 & Firefox 35 ignore the frame-ancestors directive and follow the X-Frame-Options header instead.
-> 
+>
 > Therefore, if setting `frameAncestors` you should set `frameGuard` to `false`.
 
 ### `expectCT`
@@ -535,4 +535,4 @@ Please read [Contributing Guidelines](./.github/CONTRIBUTING.md) before developm
 ## License
 The library is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
 
-Copyright 2020 Jaga Apple. All rights reserved.
+Copyright 2022 Jaga Apple. All rights reserved.
