@@ -124,7 +124,7 @@ some rules for some reason.
 ## Quick Start
 ### Requirements
 - npm or Yarn
-- Node.js 10.0.0 or higher
+- Node.js 14.15.0 or higher
 - Next.js 8.0.0 or higher
 
 ### Installation
