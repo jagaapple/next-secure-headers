@@ -5,8 +5,8 @@ developers around the world.
 
 
 ## Git branch flow
-We adhere GitHub Flow to develop this project. Anything in the `master` branch is deployable. To work on something new, create
-a descriptively named branch off of master, also add a prefix `feature/` to its name.
+We adhere GitHub Flow to develop this project. Anything in the `main` branch is deployable. To work on something new, create
+a descriptively named branch off of main, also add a prefix `feature/` to its name.
 A branch name should be started with verb and the most terse and lucid possible.
 
 ```bash
